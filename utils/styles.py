@@ -725,7 +725,7 @@ def footer(page_name: str, source: str = "MLIT Real Estate Information Library")
 <div class="app-footer">
     <strong>Japan Real Estate Intelligence</strong> · {page_name} ·
     Built by <a href="https://santimuru.github.io" target="_blank">Santiago Martinez</a> ·
-    <a href="https://github.com/santimuru/tokyo-real-estate-explorer" target="_blank">GitHub</a><br/>
+    <a href="https://github.com/santimuru/japan-real-estate" target="_blank">GitHub</a><br/>
     Data: {source}
 </div>
 """, unsafe_allow_html=True)

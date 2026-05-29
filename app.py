@@ -536,11 +536,17 @@ function triggerFlash() {{
   flashes.push({{idx, a:0, dir:1, age:0}});
   addTickerRow(particles[idx]);
 }}
-// Random interval 150-700ms — feels organic, never metronomic
+// Random interval — pauses when tab is hidden to avoid burst on return
+let _flashActive = false;
 function scheduleFlash() {{
+  if (document.hidden) {{ _flashActive = false; return; }}
   triggerFlash();
+  _flashActive = true;
   setTimeout(scheduleFlash, 200 + Math.random() * 800);
 }}
+document.addEventListener('visibilitychange', function() {{
+  if (!document.hidden && !_flashActive) setTimeout(scheduleFlash, 300);
+}});
 setTimeout(scheduleFlash, 300);
 
 let mx=-9999, my=-9999;

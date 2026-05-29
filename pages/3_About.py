@@ -114,7 +114,7 @@ st.markdown("""
 
 - [santimuru.github.io](https://santimuru.github.io)
 - [github.com/santimuru](https://github.com/santimuru)
-- [tokyo-real-estate-explorer source](https://github.com/santimuru/tokyo-real-estate-explorer)
+- [japan-real-estate source](https://github.com/santimuru/japan-real-estate)
 """)
 
 footer("About", "MLIT XIT001 API · Japan Housing and Land Survey · Statistics Bureau of Japan")

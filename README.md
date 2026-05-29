@@ -2,7 +2,7 @@
 
 An interactive Streamlit dashboard for exploring Tokyo's 23 Special Wards (特別区) real estate market — prices, trends, ward-level breakdowns, and a price estimator.
 
-**Live demo:** https://tokyo-real-estate-explorer-santiagomuru.streamlit.app
+**Live demo:** https://japan-real-estate-santimuru.streamlit.app
 **Portfolio:** https://santimuru.github.io
 
 ![Tokyo Real Estate Explorer preview](assets/screenshot.png)
@@ -46,8 +46,8 @@ Switching backends is a one-line change; the DataFrame schema is shared.
 ## Run locally
 
 ```bash
-git clone https://github.com/santimuru/tokyo-real-estate-explorer.git
-cd tokyo-real-estate-explorer
+git clone https://github.com/santimuru/japan-real-estate.git
+cd japan-real-estate
 pip install -r requirements.txt
 streamlit run app.py
 ```
@@ -67,7 +67,7 @@ streamlit run app.py
 ## Project structure
 
 ```
-tokyo-real-estate-explorer/
+japan-real-estate/
 ├── app.py                    # Streamlit main
 ├── utils/
 │   ├── data_loader.py        # synthetic + MLIT API backends

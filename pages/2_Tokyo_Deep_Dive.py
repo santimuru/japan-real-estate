@@ -76,7 +76,7 @@ with st.sidebar:
 </div>
 """, unsafe_allow_html=True)
     st.markdown("---")
-    st.caption("Built by [Santiago Martinez](https://santimuru.github.io) · [GitHub](https://github.com/santimuru/tokyo-real-estate-explorer)")
+    st.caption("Built by [Santiago Martinez](https://santimuru.github.io) · [GitHub](https://github.com/santimuru/japan-real-estate)")
 
 
 # ── Page header ────────────────────────────────────────────────────────────────
