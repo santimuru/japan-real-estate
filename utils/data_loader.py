@@ -1,17 +1,9 @@
 """
-Data loader — abstract interface with two backends:
+Data loader — three-tier entry point (load_data):
 
-1. synthetic (DEFAULT):
-   Generates a deterministic, statistically realistic dataset of Tokyo
-   real estate transactions modeled after MLIT public aggregates.
-   Used while waiting for MLIT API key approval.
-
-2. mlit_api (FUTURE):
-   Calls the MLIT Real Estate Information Library API (XIT001) with the
-   user's subscription key. Stub provided; activate by setting
-   MLIT_API_KEY env variable and DATA_SOURCE='mlit_api'.
-
-Swapping backends is a one-line change in app.py.
+1. Parquet cache (primary): reads ward_transactions.parquet if present.
+2. mlit_api: calls MLIT XIT001 API when DATA_SOURCE=mlit_api and MLIT_API_KEY is set.
+3. synthetic fallback: deterministic dataset modeled after MLIT public aggregates.
 """
 from __future__ import annotations
 
@@ -362,6 +354,35 @@ def _parse_period(raw: str | None, fallback_year: int, fallback_q: int) -> tuple
     return fallback_year, fallback_q
 
 
+def _parse_record(rec: dict, fallback_year: int, fallback_q: int) -> tuple[float, float, float, int, int, int | None]:
+    """Extract and validate numeric fields shared across both loaders.
+
+    Returns (area_m2, trade_price, price_per_m2, tx_year, tx_quarter, year_built).
+    Returns (0, 0, 0, ...) for any record that should be skipped.
+    """
+    try:
+        area_m2 = float(rec.get("Area") or rec.get("TotalFloorArea") or 0)
+    except (TypeError, ValueError):
+        area_m2 = 0.0
+
+    try:
+        trade_price = float(rec.get("TradePrice") or 0)
+    except (TypeError, ValueError):
+        trade_price = 0.0
+
+    try:
+        price_per_m2 = float(rec.get("UnitPrice") or 0)
+    except (TypeError, ValueError):
+        price_per_m2 = 0.0
+
+    if area_m2 > 0 and trade_price > 0 and price_per_m2 <= 0:
+        price_per_m2 = trade_price / area_m2
+
+    tx_year, tx_quarter = _parse_period(rec.get("Period"), fallback_year, fallback_q)
+    year_built = _parse_year_built(rec.get("BuildingYear"))
+    return area_m2, trade_price, price_per_m2, tx_year, tx_quarter, year_built
+
+
 def _fetch_quarter(api_key: str, year: int, quarter: int, pref_code: str = _TOKYO_AREA) -> list[dict]:
     headers = {"Ocp-Apim-Subscription-Key": api_key}
     params = {"year": str(year), "quarter": str(quarter), "area": pref_code, "language": "en"}
@@ -402,29 +423,11 @@ def load_from_mlit_api(api_key: str) -> pd.DataFrame:
                 if ptype is None:
                     continue
 
-                try:
-                    area_m2 = float(rec.get("Area") or rec.get("TotalFloorArea") or 0)
-                except (TypeError, ValueError):
-                    area_m2 = 0.0
-                if area_m2 <= 0:
+                area_m2, trade_price, price_per_m2, tx_year, tx_quarter, year_built = (
+                    _parse_record(rec, year, quarter)
+                )
+                if area_m2 <= 0 or trade_price <= 0:
                     continue
-
-                try:
-                    trade_price = float(rec.get("TradePrice") or 0)
-                except (TypeError, ValueError):
-                    trade_price = 0.0
-                if trade_price <= 0:
-                    continue
-
-                try:
-                    price_per_m2 = float(rec.get("UnitPrice") or 0)
-                except (TypeError, ValueError):
-                    price_per_m2 = 0.0
-                if price_per_m2 <= 0:
-                    price_per_m2 = trade_price / area_m2
-
-                tx_year, tx_quarter = _parse_period(rec.get("Period"), year, quarter)
-                year_built = _parse_year_built(rec.get("BuildingYear"))
                 layout = rec.get("FloorPlan") or "-"
 
                 winfo = TOKYO_WARDS[ward]
@@ -498,27 +501,11 @@ def load_city_data(pref_code: str, api_key: str, start_year: int = 2022) -> pd.D
                 ptype = _classify_property_type(rec)
                 if ptype is None:
                     continue
-                try:
-                    area_m2 = float(rec.get("Area") or rec.get("TotalFloorArea") or 0)
-                except (TypeError, ValueError):
-                    area_m2 = 0.0
-                if area_m2 <= 0:
+                area_m2, trade_price, price_per_m2, tx_year, tx_quarter_val, year_built = (
+                    _parse_record(rec, year, quarter)
+                )
+                if area_m2 <= 0 or trade_price <= 0:
                     continue
-                try:
-                    trade_price = float(rec.get("TradePrice") or 0)
-                except (TypeError, ValueError):
-                    trade_price = 0.0
-                if trade_price <= 0:
-                    continue
-                try:
-                    price_per_m2 = float(rec.get("UnitPrice") or 0)
-                except (TypeError, ValueError):
-                    price_per_m2 = 0.0
-                if price_per_m2 <= 0:
-                    price_per_m2 = trade_price / area_m2
-
-                tx_year, tx_quarter_val = _parse_period(rec.get("Period"), year, quarter)
-                year_built = _parse_year_built(rec.get("BuildingYear"))
 
                 rows.append({
                     "prefecture_code": pref_code,

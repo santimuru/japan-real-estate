@@ -5,7 +5,7 @@ import os
 import streamlit as st
 from utils.styles import inject_css, callout, footer, nav_top
 
-st.set_page_config(page_title="About · Japan RE", page_icon="ℹ️", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="About · Japan RE", page_icon=None, layout="wide", initial_sidebar_state="collapsed")
 inject_css()
 nav_top("about")
 
@@ -14,9 +14,9 @@ st.caption("Documentation of data sources, methods, and assumptions used across 
 
 api_key = os.environ.get("MLIT_API_KEY", "")
 if api_key:
-    callout("✓ <strong>Connected to MLIT API</strong> — Tokyo Deep Dive and City Comparison run on live transactions.", variant="pos")
+    callout("<strong>Connected to MLIT API</strong> — Tokyo Deep Dive and City Comparison run on live transactions.", variant="pos")
 else:
-    callout("ℹ️ MLIT API key not configured — Tokyo Deep Dive and City Comparison fall back to demo data.", variant="neg")
+    callout("MLIT API key not configured — Tokyo Deep Dive and City Comparison fall back to demo data.", variant="neg")
 
 st.markdown("---")
 
@@ -97,10 +97,9 @@ st.markdown("""
 |---|---|
 | Language | Python 3.11 |
 | App framework | Streamlit |
-| Visualisation | Plotly Express, Plotly Graph Objects, Pydeck |
+| Visualisation | Plotly Express, Plotly Graph Objects |
 | Data wrangling | Pandas, NumPy |
-| Geospatial | Plotly choropleth + dataofjapan/land GeoJSON |
-| Maps | Pydeck (MapLibre) |
+| Geospatial | Plotly choropleth mapbox + dataofjapan/land GeoJSON |
 | API | MLIT Real Estate Information Library — XIT001 endpoint |
 | Hosting | Streamlit Community Cloud |
 | Source control | GitHub |

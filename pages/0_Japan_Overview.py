@@ -20,7 +20,7 @@ from utils.prefecture_data import get_all_as_df
 
 st.set_page_config(
     page_title="The Divergence · Japan RE",
-    page_icon="🗾",
+    page_icon=None,
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -210,39 +210,6 @@ prem_yr   = tokyo_yr / nat_med
 
 prev_col  = f"price_ppm2_{FIRST}"
 df["yoy_pct"] = ((df[PCOL] - df[prev_col]) / df[prev_col] * 100).fillna(0)
-
-def _pref_svg(feature, size=65):
-    """Base64 SVG thumbnail of a prefecture polygon, for tooltip mini-map."""
-    import base64 as _b64
-    geom = feature.get("geometry", {})
-    if not geom:
-        return ""
-    polys = []
-    if geom["type"] == "Polygon":
-        polys = [geom["coordinates"][0]]
-    elif geom["type"] == "MultiPolygon":
-        polys = [p[0] for p in geom["coordinates"]]
-    if not polys:
-        return ""
-    all_pts = [pt for poly in polys for pt in poly]
-    xs, ys = [p[0] for p in all_pts], [p[1] for p in all_pts]
-    minx, maxx, miny, maxy = min(xs), max(xs), min(ys), max(ys)
-    span = max(maxx - minx, maxy - miny, 0.01)
-    pad, sc = 4, (size - 8) / span
-    def tx(x): return pad + (x - minx) * sc
-    def ty(y): return size - pad - (y - miny) * sc
-    els = []
-    for poly in polys:
-        pts = " ".join(f"{tx(p[0]):.1f},{ty(p[1]):.1f}" for p in poly)
-        els.append(f'<polygon points="{pts}"/>')
-    svg = (
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{size}" height="{size}" '
-        f'viewBox="0 0 {size} {size}">'
-        f'<g fill="rgba(59,130,246,0.55)" stroke="#93C5FD" stroke-width="1.2" stroke-linejoin="round">'
-        + "".join(els) + "</g></svg>"
-    )
-    return "data:image/svg+xml;base64," + _b64.b64encode(svg.encode()).decode()
-
 
 def _tooltip_note(row):
     if row["name_en"] == "Tokyo":

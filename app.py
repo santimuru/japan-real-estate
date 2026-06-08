@@ -8,18 +8,17 @@ import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
 
-from utils.styles import inject_css, feature_cards, nav_sidebar, nav_top, footer
+from utils.styles import inject_css, nav_top, footer
 from utils.prefecture_data import get_all_as_df
 
 
 st.set_page_config(
     page_title="Japan Real Estate Intelligence",
-    page_icon="🗾",
+    page_icon=None,
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 inject_css()
-nav_sidebar()
 nav_top()
 
 

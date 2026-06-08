@@ -1,45 +1,48 @@
-# 🗼 Tokyo Real Estate Explorer
+# Japan Real Estate Intelligence
 
-An interactive Streamlit dashboard for exploring Tokyo's 23 Special Wards (特別区) real estate market — prices, trends, ward-level breakdowns, and a price estimator.
+Interactive Streamlit app for exploring Japan's property market using government transaction data from the Ministry of Land, Infrastructure, Transport and Tourism (MLIT).
 
 **Live demo:** https://japan-real-estate-santimuru.streamlit.app
 **Portfolio:** https://santimuru.github.io
 
-![Tokyo Real Estate Explorer preview](assets/screenshot.png)
-
 ---
 
-## Features
+## What it covers
 
-- **Market Overview** — Interactive Pydeck map of the 23 wards with median price/m², KPI cards (median price, ¥/m², YoY growth), price trend line, and property-type composition.
-- **Ward Deep Dive** — Drill into any ward: price distribution, area-vs-price scatter by property type, temporal trend, and top stations leaderboard.
-- **Price Estimator** — Enter ward, area, year built, and station distance to get a P10/P50/P90 price range based on comparable transactions (k-NN heuristic).
-- **Global filters** — Year range, property type, and area sliders applied across every tab.
+- **Japan Overview** — Choropleth of all 47 prefectures ranked by median ¥/m², population change vs price appreciation scatter, and the akiya (vacant home) crisis mapped and trended across 2013/2018/2023.
+- **City Comparison** — Select 2–5 cities and compare transaction-level MLIT data: quarterly price trends, median ¥/m², YoY change, and property type mix.
+- **Tokyo Deep Dive** — Ward-level analytics for Tokyo's 23 Special Wards: choropleth map, ranking table, price trends, ward-year heatmap, k-NN price estimator (P10/P50/P90), and an investment value score combining momentum and relative affordability.
+- **About** — Full data source documentation, methodology notes, and known limitations.
 
 ---
 
 ## Data
 
-This project is designed to run against the **MLIT Real Estate Information Library** (国土交通省 不動産情報ライブラリ), Japan's official public API for real estate transaction data.
+| Source | Coverage | Used in |
+|---|---|---|
+| MLIT XIT001 API | Transaction-level, all prefectures, ~2-quarter lag | City Comparison, Tokyo Deep Dive |
+| MLIT aggregate reports / REINS | Prefecture price estimates 2015–2024 | Japan Overview price map |
+| Japan Housing and Land Survey | Akiya rates 2013 / 2018 / 2023 | Akiya section |
+| Statistics Bureau of Japan | Prefectural population 2010 / 2020 | Demographics scatter |
+| dataofjapan/land (GitHub) | Prefecture GeoJSON boundaries | All choropleths |
 
-Two backends are supported via the `DATA_SOURCE` environment variable:
+The Japan Overview choropleth uses curated prefecture-level aggregates, not raw API output. For transaction-level live data, use City Comparison or Tokyo Deep Dive.
 
-| Backend                 | Description                                                                                                                                           |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `synthetic` _(default)_ | Deterministic, statistically realistic dataset (~50k transactions) modeled after MLIT public aggregates. Used while MLIT API key approval is pending. |
-| `mlit_api`              | Live calls to the MLIT Reinfolib API (`XIT001` endpoint). Requires a free subscription key — see `utils/data_loader.py`.                              |
-
-Switching backends is a one-line change; the DataFrame schema is shared.
+**Backends:** the app checks for a cached parquet file first, then the live MLIT API (`DATA_SOURCE=mlit_api`), then falls back to a synthetic dataset (~50K transactions) modeled after MLIT public aggregates.
 
 ---
 
 ## Tech stack
 
-- **Streamlit** — dashboard framework
-- **Pandas / NumPy** — data wrangling
-- **Plotly** — charts (histograms, lines, scatter, bars)
-- **Pydeck** — interactive 3D map
-- **Python 3.11+**
+| Layer | Tools |
+|---|---|
+| Language | Python 3.11 |
+| App framework | Streamlit |
+| Visualisation | Plotly Express, Plotly Graph Objects |
+| Data wrangling | Pandas, NumPy |
+| Geospatial | Plotly choropleth mapbox + dataofjapan/land GeoJSON |
+| API | MLIT Real Estate Information Library — XIT001 endpoint |
+| Hosting | Streamlit Community Cloud |
 
 ---
 
@@ -52,9 +55,7 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Then open http://localhost:8501
-
-To use the real MLIT API (once you have a key):
+To use the live MLIT API (free key at reinfolib.mlit.go.jp):
 
 ```bash
 export DATA_SOURCE=mlit_api
@@ -68,25 +69,33 @@ streamlit run app.py
 
 ```
 japan-real-estate/
-├── app.py                    # Streamlit main
+├── app.py                        # Landing page / hero
+├── pages/
+│   ├── 0_Japan_Overview.py       # 47-prefecture choropleth + akiya crisis
+│   ├── 1_City_Comparison.py      # Multi-city MLIT comparison
+│   ├── 2_Tokyo_Deep_Dive.py      # 23-ward analytics + estimator
+│   └── 3_About.py                # Methodology and data sources
 ├── utils/
-│   ├── data_loader.py        # synthetic + MLIT API backends
-│   ├── ward_data.py          # ward metadata (coords, stats, stations)
-│   └── analytics.py          # aggregations + price estimator
-├── assets/
-│   └── screenshot.png
-├── requirements.txt
-└── README.md
+│   ├── data_loader.py            # Parquet / MLIT API / synthetic backends
+│   ├── ward_data.py              # Ward metadata (coords, base prices, stations)
+│   ├── prefecture_data.py        # Prefecture metadata and akiya rates
+│   └── analytics.py             # Aggregations + k-NN price estimator
+├── data/
+│   ├── prefecture_aggregates.parquet
+│   ├── prefecture_aggregates_by_type.parquet
+│   ├── ward_transactions.parquet
+│   └── tokyo23_wards.geojson
+├── .streamlit/config.toml        # Dark theme config
+└── requirements.txt
 ```
 
 ---
 
 ## Author
 
-**Santiago Martinez** — Data Analyst based in Tokyo
+**Santiago Martinez** — data analyst
 
 - Portfolio: https://santimuru.github.io
-- LinkedIn: https://www.linkedin.com/in/santiago-martinez-pezzatti-4241a3165/
 - GitHub: https://github.com/santimuru
 
 ---

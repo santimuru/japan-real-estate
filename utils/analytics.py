@@ -158,14 +158,14 @@ def investment_signals(df: pd.DataFrame) -> pd.DataFrame:
 
     def _signal(row: pd.Series) -> str:
         if row["momentum_pct"] >= 5 and row["value_score"] >= 60:
-            return "🚀 Strong Buy"
+            return "Strong Buy"
         if row["momentum_pct"] >= 2 and row["value_score"] >= 45:
-            return "📈 Bullish"
+            return "Bullish"
         if row["momentum_pct"] <= -3:
-            return "📉 Bearish"
+            return "Bearish"
         if row["value_score"] >= 55:
-            return "💎 Value Play"
-        return "➡️ Neutral"
+            return "Value Play"
+        return "Neutral"
 
     sig_df["signal"] = sig_df.apply(_signal, axis=1)
     return sig_df.sort_values("value_score", ascending=False).reset_index(drop=True)

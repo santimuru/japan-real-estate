@@ -1,5 +1,4 @@
 from __future__ import annotations
-# v2
 import streamlit as st
 
 
@@ -96,45 +95,14 @@ section[data-testid="stSidebar"],
 button[kind="header"],
 .st-emotion-cache-czk5ss { display: none !important; }
 
-/* ── Design tokens — light ── */
-:root {
+/* ── Design tokens — dark ── */
+:root,
+[data-theme="dark"] {
     --accent:        #3B82F6;
     --accent-dark:   #1D4ED8;
     --accent-faint:  rgba(59,130,246,0.10);
     --pos:           #10B981;
     --neg:           #EF4444;
-    --surface:       #FFFFFF;
-    --surface-2:     #F8FAFC;
-    --surface-3:     #F1F5F9;
-    --border:        #E2E8F0;
-    --text-h:        #0F172A;
-    --text-body:     #334155;
-    --text-muted:    #64748B;
-    --text-faint:    #94A3B8;
-    --shadow:        0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
-    --shadow-md:     0 4px 12px rgba(0,0,0,.08);
-}
-
-/* ── Dark mode — OS ── */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --accent-faint:  rgba(59,130,246,0.10);
-        --surface:       rgba(255,255,255,.04);
-        --surface-2:     rgba(255,255,255,.02);
-        --surface-3:     rgba(59,130,246,.08);
-        --border:        rgba(59,130,246,.20);
-        --text-h:        #ffffff;
-        --text-body:     rgba(180,215,255,.78);
-        --text-muted:    rgba(140,185,235,.52);
-        --text-faint:    rgba(100,150,210,.38);
-        --shadow:        0 1px 8px rgba(0,0,0,.55);
-        --shadow-md:     0 4px 20px rgba(0,0,0,.65);
-    }
-}
-
-/* ── Dark mode — Streamlit toggle ── */
-[data-theme="dark"] {
-    --accent-faint:  rgba(59,130,246,0.10);
     --surface:       rgba(255,255,255,.04);
     --surface-2:     rgba(255,255,255,.02);
     --surface-3:     rgba(59,130,246,.08);
@@ -338,153 +306,12 @@ h1, h2, h3 { color: #fff !important; }
 }
 .method-box h4:first-child { margin-top: 0; }
 
-/* ── Platform hero ── */
-.platform-hero {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2.5rem 2.5rem 2rem;
-    margin-bottom: 2rem;
-    position: relative;
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
-}
-.platform-hero::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #3B82F6, #8B5CF6, #10B981);
-}
-.ph-eyebrow {
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    margin-bottom: 0.5rem;
-}
-.ph-title {
-    font-size: 2.6rem;
-    font-weight: 800;
-    color: var(--text-h);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin: 0 0 0.8rem;
-}
-.ph-desc {
-    font-size: 1rem;
-    color: var(--text-muted);
-    max-width: 680px;
-    line-height: 1.7;
-    margin: 0 0 1.8rem;
-}
-.ph-stats {
-    display: flex;
-    gap: 2.5rem;
-    flex-wrap: wrap;
-    border-top: 1px solid var(--border);
-    padding-top: 1.2rem;
-}
-.ph-stat-n {
-    font-size: 1.75rem;
-    font-weight: 800;
-    color: var(--accent);
-    line-height: 1;
-}
-.ph-stat-l {
-    font-size: 0.72rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-    margin-top: 0.25rem;
-}
-
-/* ── Feature cards (landing page) ── */
-.feature-grid {
-    display: flex !important;
-    flex-direction: row;
-    align-items: stretch !important;
-    gap: 1rem;
-    margin: 0 0 2rem;
-}
-.feature-card {
-    flex: 1 1 0 !important;
-    min-width: 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.4rem 1.5rem 1.2rem;
-    box-shadow: var(--shadow);
-    display: flex !important;
-    flex-direction: column !important;
-    box-sizing: border-box;
-}
-.fc-icon { font-size: 1.8rem; margin-bottom: 0.6rem; line-height: 1; }
-.fc-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--text-h);
-    margin-bottom: 0.5rem;
-    user-select: text !important;
-    -webkit-user-select: text !important;
-}
-.fc-desc {
-    font-size: 0.92rem;
-    color: var(--text-muted);
-    line-height: 1.68;
-    flex: 1;
-    user-select: text !important;
-    -webkit-user-select: text !important;
-}
-.fc-tags {
-    margin-top: 0.9rem;
-    display: flex;
-    gap: 0.35rem;
-    flex-wrap: wrap;
-}
-.fc-tag {
-    background: var(--accent-faint);
-    color: var(--accent);
-    border: 1px solid var(--accent);
-    border-radius: 20px;
-    padding: 0.1rem 0.5rem;
-    font-size: 0.65rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-}
-
-/* ── Section divider with label ── */
-.section-divider {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin: 2rem 0 1.5rem;
-}
-.section-divider-line { flex: 1; height: 1px; background: var(--border); }
-.section-divider-label {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    white-space: nowrap;
-}
-
 /* ── Chart & data container borders ── */
 [data-testid="stPlotlyChart"] {
     border: 1px solid var(--border);
     border-radius: 12px;
     background: var(--surface);
     padding: 4px;
-    overflow: hidden;
-}
-[data-testid="stDeckGlJsonChart"],
-[data-testid="stPydeckChart"] {
-    border: 1px solid var(--border);
-    border-radius: 12px;
     overflow: hidden;
 }
 [data-testid="stDataFrame"] {
@@ -545,110 +372,6 @@ def kpi_card(label: str, value: str, sub: str = "", accent: bool = False) -> Non
         f'<div class="{val_cls}">{value}</div>{sub_html}</div>',
         unsafe_allow_html=True,
     )
-
-
-def feature_cards() -> None:
-    """Three cards describing each section of the platform — shown on the landing page."""
-    st.markdown("""
-<div class="feature-grid">
-
-  <div class="feature-card">
-    <div class="fc-icon">🗾</div>
-    <div class="fc-title">Japan Overview</div>
-    <div class="fc-desc">
-      Choropleth of all 47 prefectures ranked by median ¥/m² with a 2015–2024 year selector.
-      Scatter of population decline vs price appreciation — revealing Japan's urbanisation story.
-      Includes the akiya vacancy crisis: 9 million empty homes mapped and trended by region.
-    </div>
-    <div class="fc-tags">
-      <span class="fc-tag">47 Prefectures</span>
-      <span class="fc-tag">2015–2024</span>
-      <span class="fc-tag">MLIT Aggregates</span>
-    </div>
-  </div>
-
-  <div class="feature-card">
-    <div class="fc-icon">🏙️</div>
-    <div class="fc-title">City Comparison</div>
-    <div class="fc-desc">
-      Select 2–5 Japanese cities and compare their markets using transaction-level data from
-      the MLIT XIT001 API. Each data point is a real government-registered property sale —
-      not an index or estimate. Covers quarterly price trends, median ¥/m², YoY change,
-      and property type mix.
-    </div>
-    <div class="fc-tags">
-      <span class="fc-tag">Live MLIT API</span>
-      <span class="fc-tag">Up to 5 Cities</span>
-      <span class="fc-tag">Transaction Level</span>
-    </div>
-  </div>
-
-  <div class="feature-card">
-    <div class="fc-icon">🗼</div>
-    <div class="fc-title">Tokyo Deep Dive</div>
-    <div class="fc-desc">
-      Ward-level analytics for Tokyo's 23 Special Wards: bubble map, full ranking table,
-      area chart with YoY comparison, ward × year heatmap, and ward-specific breakdowns.
-      A k-NN price estimator returns P10 / P50 / P90 estimates for any property spec.
-      Investment signal dashboard scores each ward by momentum vs affordability.
-    </div>
-    <div class="fc-tags">
-      <span class="fc-tag">23 Wards</span>
-      <span class="fc-tag">k-NN Estimator</span>
-      <span class="fc-tag">Investment Signals</span>
-    </div>
-  </div>
-
-</div>
-""", unsafe_allow_html=True)
-
-
-def section_divider(label: str) -> None:
-    st.markdown(
-        f'<div class="section-divider">'
-        f'<div class="section-divider-line"></div>'
-        f'<div class="section-divider-label">{label}</div>'
-        f'<div class="section-divider-line"></div>'
-        f'</div>',
-        unsafe_allow_html=True,
-    )
-
-
-def platform_hero(stats: list[tuple[str, str]] | None = None) -> None:
-    """Full-width hero shown on the home page above all sections.
-    `stats` is a list of (value, label) tuples — defaults to project-spec counters
-    when None, but the home page passes computed insight numbers.
-    """
-    if stats is None:
-        stats = [
-            ("47", "Prefectures"),
-            ("23", "Tokyo Wards"),
-            ("9M+", "Vacant Homes"),
-            ("2015–24", "Data Range"),
-            ("¥/m²", "Transaction Level"),
-        ]
-    stats_html = "".join(
-        f'<div><div class="ph-stat-n">{v}</div><div class="ph-stat-l">{l}</div></div>'
-        for v, l in stats
-    )
-    st.markdown(f"""
-<div class="platform-hero">
-    <div class="ph-eyebrow">Portfolio Project &nbsp;·&nbsp; Python · Streamlit · Plotly · MLIT API</div>
-    <div class="ph-title">Japan Real Estate Intelligence</div>
-    <div class="ph-desc">
-        Transaction-level property data from Japan's Ministry of Land, Infrastructure, Transport and Tourism (MLIT)
-        — covering every prefecture in the country and every one of Tokyo's 23 special wards.
-        Explore national price maps, demographic trends, the akiya vacancy crisis,
-        and deep ward-level analytics including a k-NN price estimator and investment signal dashboard.
-    </div>
-    <div class="ph-stats">{stats_html}</div>
-</div>
-""", unsafe_allow_html=True)
-
-
-def nav_sidebar() -> None:
-    """No-op: sidebar replaced by top nav bar."""
-    pass
 
 
 def nav_top(current: str = "") -> None:

@@ -27,7 +27,7 @@ from utils.styles import (
 
 st.set_page_config(
     page_title="Tokyo Deep Dive · Japan RE",
-    page_icon="🗼",
+    page_icon=None,
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -49,7 +49,7 @@ min_year, max_year = int(df_all["tx_year"].min()), int(df_all["tx_year"].max())
 
 # ── Sidebar ────────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("## 🗼 Filters")
+    st.markdown("## Filters")
 
     years_available = sorted(df_all["tx_year"].unique())
     year_range = st.slider(
@@ -68,10 +68,9 @@ with st.sidebar:
     area_min, area_max = st.slider("Area (m²)", 0, 300, (0, 300), step=10)
 
     st.markdown("---")
-    source_icon = "🟢" if is_live else "🟡"
     st.markdown(f"""
 <div class="info-badge">
-    <strong>{source_icon} Data Source</strong><br>
+    <strong>Data Source</strong><br>
     {_source}
 </div>
 """, unsafe_allow_html=True)
@@ -116,11 +115,11 @@ st.markdown("<div style='margin-bottom:1.5rem'></div>", unsafe_allow_html=True)
 
 # ── Tabs ───────────────────────────────────────────────────────────────────────
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "🗺️ Map & Rankings",
-    "📈 Market Trends",
-    "🏙️ Ward Analysis",
-    "💴 Price Estimator",
-    "🧠 Market Intelligence",
+    "Map & Rankings",
+    "Market Trends",
+    "Ward Analysis",
+    "Price Estimator",
+    "Market Intelligence",
 ])
 
 
@@ -200,7 +199,7 @@ with tab1:
 
     top_w, bot_w = summary.iloc[0], summary.iloc[-1]
     callout(
-        f"📍 <strong>{top_w['ward']} ({top_w['ward_ja']})</strong> is the most expensive ward "
+        f"<strong>{top_w['ward']} ({top_w['ward_ja']})</strong> is the most expensive ward "
         f"at <strong>{top_w['ppm2_fmt']}</strong>. "
         f"<strong>{bot_w['ward']} ({bot_w['ward_ja']})</strong> sits at <strong>{bot_w['ppm2_fmt']}</strong> — "
         f"a <strong>{top_w['median_ppm2']/bot_w['median_ppm2']:.1f}× price gap</strong> within the same city."
@@ -331,7 +330,7 @@ with tab3:
     c5.metric("Population",    f"{ward_info['pop']}k")
 
     callout(
-        f"🏙️ <strong>{selected_ward} ({ward_info['ja']})</strong> ranks "
+        f"<strong>{selected_ward} ({ward_info['ja']})</strong> ranks "
         f"<strong>#{rank_pos}</strong>/23 by median ¥/m² · "
         f"YoY change: <strong>{ward_yoy:+.1f}%</strong> · "
         f"Population: <strong>{ward_info['pop']}k</strong>."
@@ -450,7 +449,7 @@ with tab4:
     _structure_opts  = ["Any", "RC", "SRC", "Steel", "Light Steel", "Wood"]
     _direction_opts  = ["Any", "South", "Southeast", "Southwest", "East", "West", "North", "Northeast", "Northwest"]
     with st.expander(
-        "🔬 Advanced features" + (" — improves accuracy with live data" if _has_extended else " — requires live MLIT data"),
+        "Advanced features" + (" — improves accuracy with live data" if _has_extended else " — requires live MLIT data"),
         expanded=_has_extended,
     ):
         adv1, adv2, adv3 = st.columns(3)
@@ -646,16 +645,16 @@ with tab5:
                         f"Within <strong>{ni_ward}</strong>, prices vary "
                         f"<strong>{top_d['median_ppm2']/cheap_d['median_ppm2']:.1f}×</strong> "
                         f"from district to district.<br><br>"
-                        f"🏆 <strong>{top_d['district']}</strong><br>"
+                        f"<strong>{top_d['district']}</strong><br>"
                         f"¥{top_d['median_ppm2']/10000:.0f}万/m²<br><br>"
-                        f"💡 <strong>{cheap_d['district']}</strong><br>"
+                        f"<strong>{cheap_d['district']}</strong><br>"
                         f"¥{cheap_d['median_ppm2']/10000:.0f}万/m²"
                     )
         else:
             st.info(f"Not enough district data for {ni_ward} in the current filter range.")
     else:
         callout(
-            "📌 <strong>Connect to the live MLIT API</strong> to unlock neighborhood intelligence. "
+            "<strong>Connect to the live MLIT API</strong> to unlock neighborhood intelligence. "
             "The <code>DistrictName</code> field reveals sub-ward price variation — "
             "up to <strong>3–5× price gaps</strong> within a single ward.",
             variant="neg",
@@ -674,7 +673,7 @@ with tab5:
 
     if not has_dna:
         callout(
-            "📌 <strong>Connect to the live MLIT API</strong> to unlock Property DNA. "
+            "<strong>Connect to the live MLIT API</strong> to unlock Property DNA. "
             "The API provides <strong>structure</strong> (RC / SRC / Steel / Wood), "
             "<strong>facing direction</strong> (south-facing commands a premium in Japan), "
             "and <strong>renovation status</strong> — enabling price decomposition by physical traits.",
