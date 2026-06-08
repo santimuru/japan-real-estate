@@ -435,8 +435,7 @@ div[data-testid="stMarkdownContainer"]:has(.app-nav) {{ margin-bottom: 0 !import
 </style>
 <div class="app-nav">
   <a class="nav-logo" href="/" target="_self">Japan RE</a>
-  {_link("Overview", "/Japan_Overview", "overview")}
-  {_link("City Comparison", "/City_Comparison", "city")}
+  {_link("The Divergence", "/Japan_Overview", "overview")}
   {_link("Tokyo Deep Dive", "/Tokyo_Deep_Dive", "tokyo")}
   {_link("About", "/About", "about")}
 </div>

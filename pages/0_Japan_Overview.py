@@ -3,6 +3,7 @@ The Divergence -- Japan's real estate market is splitting in two.
 """
 from __future__ import annotations
 
+import os
 import numpy as np
 import requests
 import pandas as pd
@@ -14,9 +15,11 @@ from pathlib import Path
 
 from utils.styles import (
     inject_css, section_title, callout, kpi_card,
-    footer, plotly_base, nav_top, is_dark,
+    footer, plotly_base, nav_top, is_dark, year_ticks,
 )
 from utils.prefecture_data import get_all_as_df
+from utils.data_loader import load_city_data, MAJOR_CITIES
+from utils.analytics import format_jpy, format_ppm2
 
 st.set_page_config(
     page_title="The Divergence · Japan RE",
@@ -695,5 +698,179 @@ border-radius:10px;margin-top:2rem;">
   </div>
 </div>
 """, unsafe_allow_html=True)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# ACT 4 — COMPARE ANY CITY (interactive finale)
+# ══════════════════════════════════════════════════════════════════════════════
+st.markdown("""
+<div style="height:2px;background:linear-gradient(90deg,rgba(59,130,246,.35),transparent);margin:2.5rem 0 2rem;"></div>
+""", unsafe_allow_html=True)
+
+section_title(
+    "Act IV — Compare any city",
+    "You've seen the national story. Now interrogate it yourself: pick 2–5 cities and put their "
+    "markets side by side, on real MLIT transaction data.",
+)
+
+_CC_COLORS = ["#3B82F6", "#F59E0B", "#EF4444", "#8B5CF6", "#10B981"]
+_cc_api_key = os.environ.get("MLIT_API_KEY", "")
+
+
+@st.cache_data(ttl=7200)
+def _cc_load_city(pref_code: str, city_name: str) -> pd.DataFrame:
+    return load_city_data(pref_code, os.environ.get("MLIT_API_KEY", ""), start_year=2022)
+
+
+_CC_CODE_PPM2 = {int(c): float(v) for c, v in zip(df["code"], df[PCOL])}
+_CC_FALLBACK_PPM2 = float(df[PCOL].median())
+
+
+def _cc_placeholder_df(city_name: str) -> pd.DataFrame:
+    pref_code = MAJOR_CITIES[city_name]["code"]
+    base_ppm2 = _CC_CODE_PPM2.get(int(pref_code), _CC_FALLBACK_PPM2)
+    rows = []
+    for yr in range(2022, 2025):
+        for q in range(1, 5):
+            rows.append({
+                "prefecture_code": pref_code, "city": city_name,
+                "property_type": "Used Apartment", "tx_year": yr, "tx_quarter": q,
+                "tx_period": f"{yr}-Q{q}", "area_m2": 55.0, "layout": "2LDK",
+                "year_built": 2010, "building_age": yr - 2010,
+                "trade_price_jpy": int(base_ppm2 * 55), "price_per_m2_jpy": base_ppm2,
+            })
+    return pd.DataFrame(rows)
+
+
+if not _cc_api_key:
+    callout(
+        "Live MLIT API key not configured — showing <strong>estimated placeholder data</strong> for illustration. "
+        "Set the <code>MLIT_API_KEY</code> secret in Streamlit Cloud to enable real transaction data.",
+        variant="neg",
+    )
+
+_cc_selected = st.multiselect(
+    "Select cities to compare (2–5)",
+    options=list(MAJOR_CITIES.keys()),
+    default=["Tokyo", "Osaka", "Fukuoka"],
+    max_selections=5,
+)
+
+if len(_cc_selected) < 2:
+    st.info("Select at least 2 cities to compare.")
+else:
+    _cc_frames: dict[str, pd.DataFrame] = {}
+    _cc_to_load = [c for c in _cc_selected if _cc_api_key]
+    if _cc_to_load:
+        _cc_bar = st.progress(0, text="Loading city data from MLIT API…")
+    for _i, _city in enumerate(_cc_selected):
+        if not _cc_api_key:
+            _cc_frames[_city] = _cc_placeholder_df(_city)
+        else:
+            _cc_bar.progress(_i / len(_cc_selected), text=f"Loading {_city}… ({_i+1}/{len(_cc_selected)})")
+            try:
+                _dfc = _cc_load_city(MAJOR_CITIES[_city]["code"], _city)
+                _dfc["city_name"] = _city
+                _cc_frames[_city] = _dfc
+            except Exception as exc:
+                st.warning(f"Could not load {_city}: {exc} — showing estimate instead.")
+                _cc_frames[_city] = _cc_placeholder_df(_city)
+    if _cc_to_load:
+        _cc_bar.empty()
+
+    # KPIs
+    section_title("Key metrics at a glance", "Latest available year vs prior year")
+    _kpi_cols = st.columns(len(_cc_selected))
+    _cc_medians: dict[str, int] = {}
+    for _i, _city in enumerate(_cc_selected):
+        _dfc = _cc_frames[_city]
+        _med_ppm2  = int(_dfc["price_per_m2_jpy"].median())
+        _med_price = int(_dfc["trade_price_jpy"].median())
+        _latest    = _dfc["tx_year"].max()
+        _p_lat  = _dfc[_dfc["tx_year"] == _latest]["price_per_m2_jpy"].median()
+        _p_prev = _dfc[_dfc["tx_year"] == _latest - 1]["price_per_m2_jpy"].median()
+        _yoy    = ((_p_lat - _p_prev) / _p_prev * 100) if (_p_prev and _p_prev > 0) else 0.0
+        _cc_medians[_city] = _med_ppm2
+        with _kpi_cols[_i]:
+            kpi_card(_city, format_ppm2(_med_ppm2), f"Median {format_jpy(_med_price)} · YoY {_yoy:+.1f}%", accent=(_i == 0))
+            st.caption(f"{len(_dfc):,} transactions")
+
+    # Price trend
+    section_title("Price trend comparison", "Median ¥/m² per quarter — year labels only for readability")
+    _trends = []
+    for _city in _cc_selected:
+        _t = (_cc_frames[_city].groupby("tx_period")["price_per_m2_jpy"]
+              .median().reset_index().rename(columns={"price_per_m2_jpy": "median_ppm2"}))
+        _t["city_name"] = _city
+        _trends.append(_t)
+    _combined = pd.concat(_trends, ignore_index=True).sort_values("tx_period")
+    _tv, _tt = year_ticks(sorted(_combined["tx_period"].unique().tolist()))
+    _cbase, _cgrid, _ = plotly_base(380)
+    _fig_ct = px.line(_combined, x="tx_period", y="median_ppm2", color="city_name", markers=True,
+                      labels={"tx_period": "", "median_ppm2": "Median ¥/m²", "city_name": ""},
+                      color_discrete_sequence=_CC_COLORS)
+    _fig_ct.update_layout(**_cbase, legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
+    _fig_ct.update_xaxes(tickvals=_tv, ticktext=_tt, showgrid=False)
+    _fig_ct.update_yaxes(gridcolor=_cgrid, tickformat=",.0f")
+    _fig_ct.update_traces(hovertemplate="%{fullData.name}<br>%{x}<br>¥/m²: %{y:,.0f}<extra></extra>")
+    st.plotly_chart(_fig_ct, use_container_width=True, config={"scrollZoom": False, "doubleClick": False, "displayModeBar": False})
+
+    # Bar + property type mix
+    _cl, _cr = st.columns(2)
+    with _cl:
+        section_title("Median ¥/m² by city", "Latest full year")
+        _bar_rows = []
+        for _city in _cc_selected:
+            _dfc = _cc_frames[_city]
+            _ly = _dfc["tx_year"].max()
+            _bar_rows.append({"city": _city, "median_ppm2": int(_dfc[_dfc["tx_year"] == _ly]["price_per_m2_jpy"].median())})
+        _bar_df = pd.DataFrame(_bar_rows).sort_values("median_ppm2", ascending=True)
+        _bb, _bg, _ = plotly_base(300)
+        _fig_cb = px.bar(_bar_df, x="median_ppm2", y="city", orientation="h", color="median_ppm2",
+                         color_continuous_scale=["#BFDBFE", "#3B82F6", "#1D4ED8"],
+                         labels={"median_ppm2": "¥/m²", "city": ""})
+        _fig_cb.update_layout(**_bb)
+        _fig_cb.update_coloraxes(showscale=False)
+        _fig_cb.update_xaxes(gridcolor=_bg, tickformat=",.0f")
+        _fig_cb.update_traces(hovertemplate="%{y}<br>¥/m²: %{x:,.0f}<extra></extra>")
+        st.plotly_chart(_fig_cb, use_container_width=True, config={"scrollZoom": False, "doubleClick": False, "displayModeBar": False})
+    with _cr:
+        section_title("Property type mix", "Share of total transactions")
+        _type_rows = []
+        for _city in _cc_selected:
+            _counts = _cc_frames[_city]["property_type"].value_counts(normalize=True).reset_index()
+            _counts.columns = ["property_type", "share"]
+            _counts["city"] = _city
+            _type_rows.append(_counts)
+        _type_df = pd.concat(_type_rows, ignore_index=True)
+        _tb, _tg, _ = plotly_base(300)
+        _fig_ct2 = px.bar(_type_df, x="share", y="city", color="property_type", orientation="h", barmode="stack",
+                          labels={"share": "Share", "city": "", "property_type": ""},
+                          color_discrete_sequence=["#3B82F6", "#F59E0B", "#EF4444", "#8B5CF6"])
+        _fig_ct2.update_layout(**_tb, legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
+        _fig_ct2.update_xaxes(gridcolor=_tg, tickformat=".0%")
+        _fig_ct2.update_traces(hovertemplate="%{fullData.name}<br>%{y}<br>Share: %{x:.0%}<extra></extra>")
+        st.plotly_chart(_fig_ct2, use_container_width=True, config={"scrollZoom": False, "doubleClick": False, "displayModeBar": False})
+
+    # Auto insight
+    if "Tokyo" in _cc_medians:
+        _tok = _cc_medians["Tokyo"]
+        _cheap = min(_cc_medians, key=_cc_medians.get)
+        _nat = nat_median  # national prefecture median computed in Act I
+        callout(
+            f"Tokyo's median ¥/m² (<strong>{format_ppm2(_tok)}</strong>) is "
+            f"<strong>{_tok/_nat:.1f}×</strong> the national average and "
+            f"<strong>{_tok/_cc_medians[_cheap]:.1f}×</strong> that of the most affordable city here "
+            f"(<strong>{_cheap}</strong> at {format_ppm2(_cc_medians[_cheap])})."
+        )
+    elif _cc_medians:
+        _exp = max(_cc_medians, key=_cc_medians.get)
+        _cheap = min(_cc_medians, key=_cc_medians.get)
+        callout(
+            f"<strong>{_exp}</strong> leads this comparison at {format_ppm2(_cc_medians[_exp])}, "
+            f"<strong>{_cc_medians[_exp]/_cc_medians[_cheap]:.1f}×</strong> the median of "
+            f"<strong>{_cheap}</strong> ({format_ppm2(_cc_medians[_cheap])})."
+        )
+
 
 footer("The Divergence", "MLIT XIT001 API · Japan Housing and Land Survey · Statistics Bureau")

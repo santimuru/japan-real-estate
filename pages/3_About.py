@@ -14,9 +14,9 @@ st.caption("Documentation of data sources, methods, and assumptions used across 
 
 api_key = os.environ.get("MLIT_API_KEY", "")
 if api_key:
-    callout("<strong>Connected to MLIT API</strong> — Tokyo Deep Dive and City Comparison run on live transactions.", variant="pos")
+    callout("<strong>Connected to MLIT API</strong> — Tokyo Deep Dive and the city comparison on The Divergence run on live transactions.", variant="pos")
 else:
-    callout("MLIT API key not configured — Tokyo Deep Dive and City Comparison fall back to demo data.", variant="neg")
+    callout("MLIT API key not configured — Tokyo Deep Dive and the city comparison fall back to demo data.", variant="neg")
 
 st.markdown("---")
 
@@ -24,7 +24,7 @@ st.markdown("## Data sources")
 st.markdown("""
 | Source | What it covers | Lag | Used in |
 |---|---|---|---|
-| MLIT XIT001 API | Transaction-level data, all 47 prefectures | ~2 quarters | City Comparison, Tokyo Deep Dive |
+| MLIT XIT001 API | Transaction-level data, all 47 prefectures | ~2 quarters | The Divergence (city comparison), Tokyo Deep Dive |
 | Japan Housing & Land Survey | Prefecture akiya rates 2013 / 2018 / 2023 | 5-yr cycle | Akiya Crisis section |
 | Statistics Bureau of Japan | Prefectural population 2010, 2020 | Census cycle | Demographics scatter |
 | dataofjapan/land (GitHub) | Prefecture GeoJSON boundaries | static | All choropleths |
@@ -32,7 +32,7 @@ st.markdown("""
 
 **MLIT data lag:** XIT001 publishes data approximately 2 quarters behind the current date. The app dynamically computes the latest available period to avoid empty requests.
 
-**Curated estimates:** Prefecture-level prices and akiya rates on the Japan Overview page are not direct API outputs — they are curated estimates from MLIT aggregate reports and REINS publications. For transaction-level live MLIT data, use City Comparison or Tokyo Deep Dive.
+**Curated estimates:** Prefecture-level prices and akiya rates on the Japan Overview page are not direct API outputs — they are curated estimates from MLIT aggregate reports and REINS publications. For transaction-level live MLIT data, use the city comparison on The Divergence, or Tokyo Deep Dive.
 
 **Secondary market only:** XIT001 publishes only secondary-market transactions (re-sales of existing properties). New construction sold directly by developers is not included. Verified empirically: across 78,000 Tokyo records spanning 2020-2024, the API never returned the categories "Newly Built Detached House" or "Pre-owned Detached House" — MLIT classifies all detached buildings under `Residential Land(Land and Building)` and uses the `Purpose` field (House / Office / Shop) to distinguish residential from commercial.
 
