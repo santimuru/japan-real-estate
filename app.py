@@ -476,7 +476,7 @@ const tickerRows = document.getElementById('ticker-rows');
 function addTickerRow(p) {{
   // Parse price per m² from city data (e.g. "¥863K/m²" → 863000)
   const rawPrice = p.price || '¥100K/m²';
-  const match = rawPrice.match(/([\d.]+)K/);
+  const match = rawPrice.match(/([\\d.]+)K/);
   const ppm2 = match ? parseFloat(match[1]) * 1000 : 100000;
 
   // Generate realistic area based on city tier
