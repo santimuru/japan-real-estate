@@ -89,7 +89,7 @@ page_header(
         "neighborhood drill-down, investment signals, and a data-driven price estimator · "
         "all powered by MLIT transaction records."
     ),
-    badges=["● Live MLIT API" if is_live else "Demo Data", "23 Wards", f"{min_year}–{max_year}"],
+    badges=["MLIT transactions" if is_live else "Demo data", "23 Wards", f"{min_year}–{max_year}"],
 )
 
 # ── Filters ────────────────────────────────────────────────────────────────────
@@ -269,7 +269,7 @@ with tab2:
         fig_pt = px.line(
             trend_pt, x="tx_period", y="median_ppm2", color="property_type", markers=True,
             labels={"tx_period": "", "median_ppm2": "¥/m²", "property_type": ""},
-            color_discrete_sequence=["#111111", "#999999", "#D8412F", "#7A5A86"],
+            color_discrete_sequence=["#111111", "#888886", "#D8412F", "#BFBFBD"],
         )
         fig_pt.update_layout(
             **base3,
@@ -460,7 +460,7 @@ with tab3:
         fig = px.scatter(
             scatter_df, x="area_m2", y="price_per_m2_jpy", color="property_type",
             opacity=0.45,
-            color_discrete_sequence=["#111111", "#999999", "#D8412F", "#7A5A86"],
+            color_discrete_sequence=["#111111", "#888886", "#D8412F", "#BFBFBD"],
             labels={"area_m2": "Area (m²)", "price_per_m2_jpy": "¥/m²", "property_type": ""},
         )
         fig.update_layout(
@@ -727,12 +727,26 @@ with tab4:
 
         with top_col:
             section_title("Top value plays")
+            rows_html = ""
             for _, row in sig_df.head(5).iterrows():
-                kpi_card(row["ward"], row["signal"], f"Score {row['value_score']:.0f} · {row['momentum_pct']:+.1f}%")
-            st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
+                rows_html += (
+                    f'<div style="border-top:1px solid #E7E7E4;padding:0.7rem 0;">'
+                    f'<div style="display:flex;justify-content:space-between;align-items:baseline;gap:1rem;">'
+                    f'<span style="font-weight:600;font-size:1.0rem;color:#111111;">{row["ward"]}</span>'
+                    f'<span style="font-weight:600;font-size:0.84rem;color:#D8412F;white-space:nowrap;">{row["signal"]}</span></div>'
+                    f'<div style="font-size:0.74rem;color:#6B6B68;margin-top:0.15rem;">'
+                    f'Score {row["value_score"]:.0f} · {row["momentum_pct"]:+.1f}% YoY</div></div>')
+            st.markdown(rows_html, unsafe_allow_html=True)
             section_title("Most bearish")
+            rows_b = ""
             for _, row in sig_df[sig_df["momentum_pct"] < 0].sort_values("momentum_pct").head(3).iterrows():
-                kpi_card(row["ward"], f"{row['momentum_pct']:+.1f}%", "YoY momentum")
+                rows_b += (
+                    f'<div style="border-top:1px solid #E7E7E4;padding:0.7rem 0;">'
+                    f'<div style="display:flex;justify-content:space-between;align-items:baseline;gap:1rem;">'
+                    f'<span style="font-weight:600;font-size:1.0rem;color:#111111;">{row["ward"]}</span>'
+                    f'<span style="font-weight:600;font-size:0.9rem;color:#D8412F;">{row["momentum_pct"]:+.1f}%</span></div>'
+                    f'<div style="font-size:0.74rem;color:#6B6B68;margin-top:0.15rem;">YoY momentum</div></div>')
+            st.markdown(rows_b, unsafe_allow_html=True)
 
         top_play   = sig_df.iloc[0]
         hot_market = sig_df.sort_values("momentum_pct", ascending=False).iloc[0]
