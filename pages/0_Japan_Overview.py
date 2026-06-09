@@ -140,7 +140,7 @@ with map_col:
         fig_map = px.choropleth_mapbox(
             df, geojson=geojson, locations="name_geo",
             featureidkey="properties.nam", color=PCOL,
-            color_continuous_scale=["#E7E0D0", "#C9D2DE", "#9FB0C6", "#5C7397", "#2A4061"],
+            color_continuous_scale=["#F2F2F0", "#D8D8D6", "#9A9A98", "#555553", "#111111"],
             mapbox_style="carto-positron",
             center={"lat": 37.0, "lon": 137.0},
             zoom=4.0,
@@ -222,7 +222,7 @@ with map_col:
             var pop  = cd[4] != null ? parseFloat(cd[4]) : null;
             var note = cd[5] || '';
             var yoyStr = yoy != null ? (yoy >= 0 ? '+' : '') + yoy.toFixed(1) + '% YoY' : '';
-            var yoyClr = yoy == null ? '#8A857C' : yoy > 0 ? '#5C7397' : '#D5836A';
+            var yoyClr = yoy == null ? '#8A857C' : yoy > 0 ? '#888888' : '#E0A091';
 
             tip.innerHTML =
               '<div style="margin-bottom:5px">' +
@@ -232,15 +232,15 @@ with map_col:
               '<div style="font-size:9px;color:rgba(147,197,253,.38);text-transform:uppercase;letter-spacing:.10em;margin-bottom:10px">' + note + '</div>' +
               '<div style="font-size:9px;color:rgba(147,197,253,.45);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px">Median ¥/m²</div>' +
               '<div style="margin-bottom:10px">' +
-                '<span style="font-size:22px;font-weight:800;color:#5C7397">¥' + prc + '</span>' +
+                '<span style="font-size:22px;font-weight:800;color:#888888">¥' + prc + '</span>' +
                 (yoyStr ? '&nbsp;<span style="font-size:12px;color:' + yoyClr + '">' + yoyStr + '</span>' : '') +
               '</div>' +
               '<span style="font-size:9px;color:rgba(147,197,253,.45);text-transform:uppercase;letter-spacing:.08em">Rank</span>&nbsp;' +
-              '<span style="color:#9FB0C6;font-weight:700;font-size:13px">#' + rnk + '</span>&nbsp;' +
+              '<span style="color:#BFBFBF;font-weight:700;font-size:13px">#' + rnk + '</span>&nbsp;' +
               '<span style="font-size:9px;color:rgba(147,197,253,.38)">of 47</span>' +
               '&nbsp;&nbsp;<span style="color:rgba(147,197,253,.25)">·</span>&nbsp;&nbsp;' +
               '<span style="font-size:9px;color:rgba(147,197,253,.45);text-transform:uppercase;letter-spacing:.08em">Pop</span>&nbsp;' +
-              '<span style="color:#9FB0C6;font-size:12px">' + (pop != null ? pop.toFixed(1) + 'M' : 'n/a') + '</span>';
+              '<span style="color:#BFBFBF;font-size:12px">' + (pop != null ? pop.toFixed(1) + 'M' : 'n/a') + '</span>';
 
             pos(ev.event); tip.style.display = 'block';
 
@@ -323,7 +323,7 @@ callout(
 # ACT 2 · THE SPLIT
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
-<div style="height:2px;background:linear-gradient(90deg,#C0492B,transparent);margin:2rem 0;"></div>
+<div style="height:2px;background:linear-gradient(90deg,#D8412F,transparent);margin:2rem 0;"></div>
 """, unsafe_allow_html=True)
 
 section_title("Act II · The Split", f"Population change 2010-2020 vs price appreciation {FIRST}-{LATEST}")
@@ -363,8 +363,8 @@ callout(
 
 dark       = is_dark()
 ann_bg     = "rgba(8,12,20,0.92)"
-ann_border = "#DED7C8"
-ann_font   = "#1F1B16"
+ann_border = "#E7E7E4"
+ann_font   = "#111111"
 
 sc_chart, sc_insight = st.columns([3, 1])
 
@@ -377,7 +377,7 @@ with sc_chart:
         color="is_major_metro",
         size=PCOL,
         size_max=28,
-        color_discrete_map={True: "#2A4061", False: "#5A554C"},
+        color_discrete_map={True: "#111111", False: "#5A554C"},
         labels={
             "pop_change_pct":   "Population change 2010-2020 (%)",
             "price_change_pct": f"Price appreciation {FIRST}-{LATEST} (%)",
@@ -425,19 +425,19 @@ with sc_chart:
 with sc_insight:
     most_surprising = df[~df["is_major_metro"]].nlargest(3, "price_change_pct")[["name_en", "price_change_pct"]]
     st.markdown(f"""
-<div style="padding:1.2rem;background:rgba(42,64,97,.06);border:1px solid #1F1B16;
+<div style="padding:1.2rem;background:rgba(42,64,97,.06);border:1px solid #111111;
 border-radius:10px;margin-top:2.2rem;">
   <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
-  color:#6E6557;margin-bottom:1rem;">Key Finding</div>
-  <div style="font-size:26px;font-weight:900;color:#2A4061;line-height:1;">R² = {r_sq:.2f}</div>
+  color:#8A8A88;margin-bottom:1rem;">Key Finding</div>
+  <div style="font-size:26px;font-weight:900;color:#111111;line-height:1;">R² = {r_sq:.2f}</div>
   <div style="font-size:11px;color:#3A352C;margin-top:.4rem;line-height:1.6;">
     Population explains only {r_sq*100:.0f}% of price variation.
     Near-zero BoJ rates lifted all 47 prefectures regardless of demographics.
   </div>
-  <div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid #DED7C8;">
+  <div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid #E7E7E4;">
     <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.10em;
-    color:#6E6557;margin-bottom:.6rem;">Non-metro surprises</div>
-    {"".join(f'<div style="font-size:12px;color:#3A352C;margin-bottom:.3rem;"><strong style=color:#9FB0C6>{r["name_en"]}</strong> +{r["price_change_pct"]:.0f}%</div>' for _, r in most_surprising.iterrows())}
+    color:#8A8A88;margin-bottom:.6rem;">Non-metro surprises</div>
+    {"".join(f'<div style="font-size:12px;color:#3A352C;margin-bottom:.3rem;"><strong style=color:#BFBFBF>{r["name_en"]}</strong> +{r["price_change_pct"]:.0f}%</div>' for _, r in most_surprising.iterrows())}
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -494,7 +494,7 @@ try:
         fig_akiya = px.choropleth(
             df, geojson=geojson, locations="name_geo",
             featureidkey="properties.nam", color="akiya_rate_2023",
-            color_continuous_scale=["#E7E0D0", "#D29A7E", "#C0492B", "#7A2E1C"],
+            color_continuous_scale=["#F5ECEA", "#E0A091", "#D8412F", "#9E2C1C"],
             labels={"akiya_rate_2023": "Vacancy %"},
             hover_name="name_en",
             custom_data=["name_ja", "akiya_rate_2023", "akiya_rate_2013", "akiya_change"],
@@ -507,7 +507,7 @@ try:
                 "  <span style='color:rgba(252,165,165,.55);font-size:12px'>%{customdata[0]}</span><br>"
                 "<span style='color:rgba(252,165,165,.5);font-size:10px;text-transform:uppercase;"
                 "letter-spacing:.08em'>Vacancy 2023</span><br>"
-                "<span style='font-size:20px;font-weight:800;color:#C0492B'>"
+                "<span style='font-size:20px;font-weight:800;color:#D8412F'>"
                 "%{customdata[1]:.1f}%</span><br>"
                 "<span style='color:rgba(252,165,165,.5);font-size:10px'>2013: %{customdata[2]:.1f}%"
                 " &nbsp;·&nbsp; change: %{customdata[3]:+.1f}pp</span>"
@@ -543,7 +543,7 @@ with col_bar:
         top15.sort_values("akiya_rate_2023"),
         x="akiya_rate_2023", y="name_en", orientation="h",
         color="akiya_rate_2023",
-        color_continuous_scale=["#E7E0D0", "#C0492B", "#7A2E1C"],
+        color_continuous_scale=["#F5ECEA", "#D8412F", "#9E2C1C"],
         labels={"akiya_rate_2023": "Vacancy rate (%)", "name_en": ""},
     )
     fig_vac.update_layout(**base3)
@@ -574,13 +574,13 @@ with trend_col:
     fig_trend = px.line(
         region_trend, x="year", y="akiya_rate", color="region", markers=True,
         labels={"year": "", "akiya_rate": "Avg vacancy (%)", "region": ""},
-        color_discrete_sequence=["#2A4061", "#B08A36", "#C0492B", "#7A5A86", "#2A4061",
+        color_discrete_sequence=["#111111", "#999999", "#D8412F", "#7A5A86", "#111111",
                                   "#B05070", "#2E7D72", "#C2622A"],
     )
     fig_trend.update_layout(
         **base4,
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
-                    font=dict(color="#1F1B16")),
+                    font=dict(color="#111111")),
     )
     fig_trend.update_xaxes(showgrid=False, tickvals=[2013, 2018, 2023])
     fig_trend.update_yaxes(gridcolor=grid4, ticksuffix="%")
@@ -596,7 +596,7 @@ with trend_insight:
 border-radius:10px;margin-top:2rem;">
   <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
   color:rgba(255,100,100,.55);margin-bottom:1rem;">Projection</div>
-  <div style="font-size:24px;font-weight:900;color:#C0492B;line-height:1;">&gt;20%</div>
+  <div style="font-size:24px;font-weight:900;color:#D8412F;line-height:1;">&gt;20%</div>
   <div style="font-size:11px;color:rgba(255,180,180,.55);margin-top:.4rem;line-height:1.6;">
     National vacancy rate before 2035 if current +{avg_change:.1f}pp per-decade trend holds.
   </div>
@@ -612,7 +612,7 @@ border-radius:10px;margin-top:2rem;">
 # ACT 4 · COMPARE ANY CITY (interactive finale)
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
-<div style="height:2px;background:linear-gradient(90deg,#C0492B,transparent);margin:2.5rem 0 2rem;"></div>
+<div style="height:2px;background:linear-gradient(90deg,#D8412F,transparent);margin:2.5rem 0 2rem;"></div>
 """, unsafe_allow_html=True)
 
 section_title(
@@ -621,7 +621,7 @@ section_title(
     "markets side by side, on real MLIT transaction data.",
 )
 
-_CC_COLORS = ["#2A4061", "#B08A36", "#C0492B", "#7A5A86", "#2A4061"]
+_CC_COLORS = ["#111111", "#999999", "#D8412F", "#7A5A86", "#111111"]
 _cc_api_key = os.environ.get("MLIT_API_KEY", "")
 
 
@@ -735,7 +735,7 @@ else:
         _bar_df = pd.DataFrame(_bar_rows).sort_values("median_ppm2", ascending=True)
         _bb, _bg, _ = plotly_base(300)
         _fig_cb = px.bar(_bar_df, x="median_ppm2", y="city", orientation="h", color="median_ppm2",
-                         color_continuous_scale=["#C9D2DE", "#2A4061", "#1B2C44"],
+                         color_continuous_scale=["#E2E2E0", "#111111", "#000000"],
                          labels={"median_ppm2": "¥/m²", "city": ""})
         _fig_cb.update_layout(**_bb)
         _fig_cb.update_coloraxes(showscale=False)
@@ -754,7 +754,7 @@ else:
         _tb, _tg, _ = plotly_base(300)
         _fig_ct2 = px.bar(_type_df, x="share", y="city", color="property_type", orientation="h", barmode="stack",
                           labels={"share": "Share", "city": "", "property_type": ""},
-                          color_discrete_sequence=["#2A4061", "#B08A36", "#C0492B", "#7A5A86"])
+                          color_discrete_sequence=["#111111", "#999999", "#D8412F", "#7A5A86"])
         _fig_ct2.update_layout(**_tb, legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
         _fig_ct2.update_xaxes(gridcolor=_tg, tickformat=".0%")
         _fig_ct2.update_traces(hovertemplate="%{fullData.name}<br>%{y}<br>Share: %{x:.0%}<extra></extra>")

@@ -158,7 +158,7 @@ with tab1:
             locations="ward",
             featureidkey="properties.ward_en",
             color="median_ppm2",
-            color_continuous_scale=["#E2E6EC", "#2A4061", "#1B2C44"],
+            color_continuous_scale=["#EEEEEC", "#111111", "#000000"],
             mapbox_style="carto-positron" if get_theme() == "dark" else "carto-positron",
             center={"lat": 35.685, "lon": 139.75},
             zoom=9.6,
@@ -239,7 +239,7 @@ with tab2:
         fig_yoy = px.bar(
             yoy_df, x="yoy", y="ward", orientation="h",
             color="yoy",
-            color_continuous_scale=["#C0492B", "#9A958C", "#2A4061"],
+            color_continuous_scale=["#D8412F", "#CCCCCA", "#111111"],
             color_continuous_midpoint=0,
             labels={"yoy": "YoY (%)", "ward": ""},
         )
@@ -267,7 +267,7 @@ with tab2:
         fig_pt = px.line(
             trend_pt, x="tx_period", y="median_ppm2", color="property_type", markers=True,
             labels={"tx_period": "", "median_ppm2": "¥/m²", "property_type": ""},
-            color_discrete_sequence=["#2A4061", "#B08A36", "#C0492B", "#7A5A86"],
+            color_discrete_sequence=["#111111", "#999999", "#D8412F", "#7A5A86"],
         )
         fig_pt.update_layout(
             **base3,
@@ -287,7 +287,7 @@ with tab2:
     base4, _, _ = plotly_base(520)
     fig_heat = px.imshow(
         heat_pivot,
-        color_continuous_scale=["#E2E6EC", "#2A4061", "#1B2C44"],
+        color_continuous_scale=["#EEEEEC", "#111111", "#000000"],
         labels={"color": "¥/m²", "x": "", "y": ""},
         aspect="auto",
     )
@@ -325,7 +325,7 @@ with tab2:
                     struct_df.sort_values("premium_pct"),
                     x="premium_pct", y="structure", orientation="h",
                     color="premium_pct",
-                    color_continuous_scale=["#C0492B", "#9A958C", "#2A4061"],
+                    color_continuous_scale=["#D8412F", "#CCCCCA", "#111111"],
                     color_continuous_midpoint=0,
                     text=struct_df.sort_values("premium_pct")["premium_pct"].apply(lambda x: f"{x:+.1f}%"),
                     labels={"premium_pct": "Premium vs median (%)", "structure": ""},
@@ -349,7 +349,7 @@ with tab2:
                     dir_df.sort_values("premium_pct"),
                     x="premium_pct", y="direction", orientation="h",
                     color="premium_pct",
-                    color_continuous_scale=["#C0492B", "#9A958C", "#2A4061"],
+                    color_continuous_scale=["#D8412F", "#CCCCCA", "#111111"],
                     color_continuous_midpoint=0,
                     text=dir_df.sort_values("premium_pct")["premium_pct"].apply(lambda x: f"{x:+.1f}%"),
                     labels={"premium_pct": "Premium (%)", "direction": ""},
@@ -376,7 +376,7 @@ with tab2:
                 base3, grid3, _ = plotly_base(320)
                 fig_renov = go.Figure(go.Bar(
                     x=renov_labels, y=renov_vals,
-                    marker_color=["#8A857C", "#2A4061"],
+                    marker_color=["#8A857C", "#111111"],
                     text=[f"¥{v/10000:.0f}万/m²" for v in renov_vals],
                     textposition="outside",
                 ))
@@ -442,7 +442,7 @@ with tab3:
         base, grid, _ = plotly_base(300)
         fig = px.histogram(
             clipped, x="trade_price_jpy", nbins=40,
-            color_discrete_sequence=["#2A4061"],
+            color_discrete_sequence=["#111111"],
             labels={"trade_price_jpy": "Trade price (JPY)", "count": ""},
         )
         fig.update_layout(**base, bargap=0.05)
@@ -458,7 +458,7 @@ with tab3:
         fig = px.scatter(
             scatter_df, x="area_m2", y="price_per_m2_jpy", color="property_type",
             opacity=0.45,
-            color_discrete_sequence=["#2A4061", "#B08A36", "#C0492B", "#7A5A86"],
+            color_discrete_sequence=["#111111", "#999999", "#D8412F", "#7A5A86"],
             labels={"area_m2": "Area (m²)", "price_per_m2_jpy": "¥/m²", "property_type": ""},
         )
         fig.update_layout(
@@ -481,7 +481,7 @@ with tab3:
             base3, grid3, _ = plotly_base(300)
             fig = px.line(trend_w, x="tx_period", y="median_ppm2", markers=True,
                           labels={"tx_period": "", "median_ppm2": "¥/m²"})
-            fig.update_traces(line_color="#2A4061", line_width=3, marker_size=7,
+            fig.update_traces(line_color="#111111", line_width=3, marker_size=7,
                               hovertemplate="%{x}<br>¥/m²: %{y:,.0f}<extra></extra>")
             fig.update_layout(**base3)
             fig.update_xaxes(tickvals=tv, ticktext=tt, showgrid=False)
@@ -498,7 +498,7 @@ with tab3:
                 layout_df.sort_values("n", ascending=True),
                 x="n", y="layout", orientation="h",
                 color="n",
-                color_continuous_scale=["#C9D2DE", "#2A4061", "#1B2C44"],
+                color_continuous_scale=["#E2E2E0", "#111111", "#000000"],
                 labels={"n": "Transactions", "layout": ""},
             )
             fig.update_layout(**base4)
@@ -532,7 +532,7 @@ with tab3:
                     top_nb.sort_values("median_ppm2"),
                     x="median_ppm2", y="district", orientation="h",
                     color="median_ppm2",
-                    color_continuous_scale=["#E2E6EC", "#2A4061", "#1B2C44"],
+                    color_continuous_scale=["#EEEEEC", "#111111", "#000000"],
                     labels={"median_ppm2": "Median ¥/m²", "district": ""},
                     text=top_nb.sort_values("median_ppm2")["median_ppm2"].apply(lambda x: f"¥{x/10000:.0f}万"),
                 )
@@ -636,15 +636,15 @@ with tab5:
         fig_range.add_trace(go.Bar(
             x=[result["total_p90"] - result["total_p10"]], y=["Estimated range"],
             base=result["total_p10"], orientation="h",
-            marker_color="#1F1B16",
-            marker_line=dict(color="#2A4061", width=2),
+            marker_color="#111111",
+            marker_line=dict(color="#111111", width=2),
             showlegend=False,
             hovertemplate="P10: ¥%{base:,.0f}<br>P90: ¥%{x:,.0f}<extra></extra>",
         ))
         fig_range.add_trace(go.Scatter(
             x=[result["total_p50"]], y=["Estimated range"],
             mode="markers+text",
-            marker=dict(size=22, color="#2A4061", symbol="diamond"),
+            marker=dict(size=22, color="#111111", symbol="diamond"),
             text=[format_jpy(result["total_p50"])], textposition="top center",
             showlegend=False,
             hovertemplate="Median: ¥%{x:,.0f}<extra></extra>",
@@ -688,7 +688,7 @@ with tab4:
                 marker=dict(
                     size=np.sqrt(sig_df["n_transactions"]).clip(8, 28),
                     color=sig_df["value_score"],
-                    colorscale=[[0, "#C0492B"], [0.4, "#B08A36"], [0.7, "#2A4061"], [1, "#2A4061"]],
+                    colorscale=[[0, "#D8412F"], [0.4, "#999999"], [0.7, "#111111"], [1, "#111111"]],
                     showscale=True,
                     colorbar=dict(title="Value Score", thickness=12, len=0.7),
                     line=dict(color="white", width=1),
