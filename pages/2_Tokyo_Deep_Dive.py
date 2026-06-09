@@ -1,5 +1,5 @@
-﻿"""
-Tokyo Deep Dive — ward-level analytics for Tokyo's 23 Special Wards.
+"""
+Tokyo Deep Dive · ward-level analytics for Tokyo's 23 Special Wards.
 """
 from __future__ import annotations
 
@@ -81,12 +81,12 @@ with st.sidebar:
 # ── Page header ────────────────────────────────────────────────────────────────
 page_header(
     eyebrow="Japan Real Estate Intelligence · Tokyo Deep Dive",
-    title="Tokyo's 23 Wards — Deep Analytics",
+    title="Tokyo's 23 Wards · Deep Analytics",
     desc=(
         f"Ward-level breakdown of Tokyo's real estate market covering {min_year}–{max_year} "
         f"with {len(df_all):,} official transactions. "
         "Explore price geography, market trends and what drives them, per-ward analysis with "
-        "neighborhood drill-down, investment signals, and a data-driven price estimator — "
+        "neighborhood drill-down, investment signals, and a data-driven price estimator · "
         "all powered by MLIT transaction records."
     ),
     badges=["● Live MLIT API" if is_live else "Demo Data", "23 Wards", f"{min_year}–{max_year}"],
@@ -125,7 +125,7 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 
 
 # ══════════════════════════════════════════════════════════════════════
-# TAB 1 — MAP & RANKINGS
+# TAB 1 · MAP & RANKINGS
 # ══════════════════════════════════════════════════════════════════════
 with tab1:
     section_title(
@@ -158,8 +158,8 @@ with tab1:
             locations="ward",
             featureidkey="properties.ward_en",
             color="median_ppm2",
-            color_continuous_scale=["#DBEAFE", "#3B82F6", "#1D4ED8"],
-            mapbox_style="carto-darkmatter" if get_theme() == "dark" else "carto-positron",
+            color_continuous_scale=["#E2E6EC", "#2A4061", "#1B2C44"],
+            mapbox_style="carto-positron" if get_theme() == "dark" else "carto-positron",
             center={"lat": 35.685, "lon": 139.75},
             zoom=9.6,
             opacity=0.78,
@@ -202,13 +202,13 @@ with tab1:
     callout(
         f"<strong>{top_w['ward']} ({top_w['ward_ja']})</strong> is the most expensive ward "
         f"at <strong>{top_w['ppm2_fmt']}</strong>. "
-        f"<strong>{bot_w['ward']} ({bot_w['ward_ja']})</strong> sits at <strong>{bot_w['ppm2_fmt']}</strong> — "
+        f"<strong>{bot_w['ward']} ({bot_w['ward_ja']})</strong> sits at <strong>{bot_w['ppm2_fmt']}</strong> · "
         f"a <strong>{top_w['median_ppm2']/bot_w['median_ppm2']:.1f}× price gap</strong> within the same city."
     )
 
 
 # ══════════════════════════════════════════════════════════════════════
-# TAB 2 — MARKET TRENDS
+# TAB 2 · MARKET TRENDS
 # ══════════════════════════════════════════════════════════════════════
 with tab2:
     section_title(
@@ -222,7 +222,7 @@ with tab2:
 
     callout(
         f"Tokyo's citywide median ¥/m² moved from <strong>¥{first_val/10000:.0f}万</strong> ({min_year}) "
-        f"to <strong>¥{last_val/10000:.0f}万</strong> ({max_year}) — "
+        f"to <strong>¥{last_val/10000:.0f}万</strong> ({max_year}) · "
         f"a <strong>{total_growth:+.1f}% appreciation</strong> over the period. "
         "Post-COVID demand recovery, a weak yen attracting foreign capital, "
         "and chronic undersupply in central wards have all contributed.",
@@ -232,14 +232,14 @@ with tab2:
     c1, c2 = st.columns(2)
 
     with c1:
-        section_title("YoY price change by ward", "Latest year vs prior year — positive = appreciation")
+        section_title("YoY price change by ward", "Latest year vs prior year · positive = appreciation")
         ward_yoy_rows = [{"ward": w, "yoy": yoy_growth(df, ward=w)} for w in df["ward"].unique()]
         yoy_df = pd.DataFrame(ward_yoy_rows).sort_values("yoy", ascending=True)
         base2, grid2, zero2 = plotly_base(520)
         fig_yoy = px.bar(
             yoy_df, x="yoy", y="ward", orientation="h",
             color="yoy",
-            color_continuous_scale=["#EF4444", "#888888", "#3B82F6"],
+            color_continuous_scale=["#C0492B", "#9A958C", "#2A4061"],
             color_continuous_midpoint=0,
             labels={"yoy": "YoY (%)", "ward": ""},
         )
@@ -253,7 +253,7 @@ with tab2:
     with c2:
         section_title(
             "Price trend by property type",
-            "Quarterly median. Year labels only — hover to see individual quarters.",
+            "Quarterly median. Year labels only · hover to see individual quarters.",
         )
         trend_pt = (
             df.groupby(["tx_period", "property_type"])["price_per_m2_jpy"]
@@ -267,7 +267,7 @@ with tab2:
         fig_pt = px.line(
             trend_pt, x="tx_period", y="median_ppm2", color="property_type", markers=True,
             labels={"tx_period": "", "median_ppm2": "¥/m²", "property_type": ""},
-            color_discrete_sequence=["#3B82F6", "#F59E0B", "#EF4444", "#8B5CF6"],
+            color_discrete_sequence=["#2A4061", "#B08A36", "#C0492B", "#7A5A86"],
         )
         fig_pt.update_layout(
             **base3,
@@ -278,7 +278,7 @@ with tab2:
         fig_pt.update_traces(hovertemplate="%{fullData.name}<br>%{x}<br>¥/m²: %{y:,.0f}<extra></extra>")
         st.plotly_chart(fig_pt, use_container_width=True, config={"scrollZoom": False, "doubleClick": False, "displayModeBar": False})
 
-    section_title("Ward × year price heatmap", "Each cell = median ¥/m² — spot which wards appreciated fastest and which plateaued")
+    section_title("Ward × year price heatmap", "Each cell = median ¥/m² · spot which wards appreciated fastest and which plateaued")
     heat_df = (
         df.groupby(["ward", "tx_year"])["price_per_m2_jpy"]
         .median().reset_index()
@@ -287,7 +287,7 @@ with tab2:
     base4, _, _ = plotly_base(520)
     fig_heat = px.imshow(
         heat_pivot,
-        color_continuous_scale=["#DBEAFE", "#3B82F6", "#1D4ED8"],
+        color_continuous_scale=["#E2E6EC", "#2A4061", "#1B2C44"],
         labels={"color": "¥/m²", "x": "", "y": ""},
         aspect="auto",
     )
@@ -299,7 +299,7 @@ with tab2:
     st.markdown("---")
     section_title(
         "What drives price",
-        "How a building's physical DNA — structure, facing orientation, and renovation — "
+        "How a building's physical DNA · structure, facing orientation, and renovation · "
         "moves ¥/m² against the Tokyo median. Sourced directly from MLIT transaction records.",
     )
     has_dna = "structure" in df_all.columns and df_all["structure"].notna().any()
@@ -325,7 +325,7 @@ with tab2:
                     struct_df.sort_values("premium_pct"),
                     x="premium_pct", y="structure", orientation="h",
                     color="premium_pct",
-                    color_continuous_scale=["#EF4444", "#888888", "#3B82F6"],
+                    color_continuous_scale=["#C0492B", "#9A958C", "#2A4061"],
                     color_continuous_midpoint=0,
                     text=struct_df.sort_values("premium_pct")["premium_pct"].apply(lambda x: f"{x:+.1f}%"),
                     labels={"premium_pct": "Premium vs median (%)", "structure": ""},
@@ -349,7 +349,7 @@ with tab2:
                     dir_df.sort_values("premium_pct"),
                     x="premium_pct", y="direction", orientation="h",
                     color="premium_pct",
-                    color_continuous_scale=["#EF4444", "#888888", "#3B82F6"],
+                    color_continuous_scale=["#C0492B", "#9A958C", "#2A4061"],
                     color_continuous_midpoint=0,
                     text=dir_df.sort_values("premium_pct")["premium_pct"].apply(lambda x: f"{x:+.1f}%"),
                     labels={"premium_pct": "Premium (%)", "direction": ""},
@@ -376,7 +376,7 @@ with tab2:
                 base3, grid3, _ = plotly_base(320)
                 fig_renov = go.Figure(go.Bar(
                     x=renov_labels, y=renov_vals,
-                    marker_color=["#94A3B8", "#3B82F6"],
+                    marker_color=["#8A857C", "#2A4061"],
                     text=[f"¥{v/10000:.0f}万/m²" for v in renov_vals],
                     textposition="outside",
                 ))
@@ -393,7 +393,7 @@ with tab2:
 
 
 # ══════════════════════════════════════════════════════════════════════
-# TAB 3 — WARD ANALYSIS
+# TAB 3 · WARD ANALYSIS
 # ══════════════════════════════════════════════════════════════════════
 with tab3:
     ward_list = sorted(df["ward"].unique())
@@ -417,7 +417,7 @@ with tab3:
         ward_summary(df).reset_index(drop=True).reset_index()
         .query("ward == @selected_ward")["index"].values
     )
-    rank_pos = int(ward_rank[0]) + 1 if len(ward_rank) else "—"
+    rank_pos = int(ward_rank[0]) + 1 if len(ward_rank) else "·"
 
     c1, c2, c3, c4, c5 = st.columns(5)
     c1.metric("Transactions", f"{len(ward_df):,}")
@@ -442,7 +442,7 @@ with tab3:
         base, grid, _ = plotly_base(300)
         fig = px.histogram(
             clipped, x="trade_price_jpy", nbins=40,
-            color_discrete_sequence=["#3B82F6"],
+            color_discrete_sequence=["#2A4061"],
             labels={"trade_price_jpy": "Trade price (JPY)", "count": ""},
         )
         fig.update_layout(**base, bargap=0.05)
@@ -458,7 +458,7 @@ with tab3:
         fig = px.scatter(
             scatter_df, x="area_m2", y="price_per_m2_jpy", color="property_type",
             opacity=0.45,
-            color_discrete_sequence=["#3B82F6", "#F59E0B", "#EF4444", "#8B5CF6"],
+            color_discrete_sequence=["#2A4061", "#B08A36", "#C0492B", "#7A5A86"],
             labels={"area_m2": "Area (m²)", "price_per_m2_jpy": "¥/m²", "property_type": ""},
         )
         fig.update_layout(
@@ -481,7 +481,7 @@ with tab3:
             base3, grid3, _ = plotly_base(300)
             fig = px.line(trend_w, x="tx_period", y="median_ppm2", markers=True,
                           labels={"tx_period": "", "median_ppm2": "¥/m²"})
-            fig.update_traces(line_color="#3B82F6", line_width=3, marker_size=7,
+            fig.update_traces(line_color="#2A4061", line_width=3, marker_size=7,
                               hovertemplate="%{x}<br>¥/m²: %{y:,.0f}<extra></extra>")
             fig.update_layout(**base3)
             fig.update_xaxes(tickvals=tv, ticktext=tt, showgrid=False)
@@ -498,7 +498,7 @@ with tab3:
                 layout_df.sort_values("n", ascending=True),
                 x="n", y="layout", orientation="h",
                 color="n",
-                color_continuous_scale=["#BFDBFE", "#3B82F6", "#1D4ED8"],
+                color_continuous_scale=["#C9D2DE", "#2A4061", "#1B2C44"],
                 labels={"n": "Transactions", "layout": ""},
             )
             fig.update_layout(**base4)
@@ -513,7 +513,7 @@ with tab3:
     st.markdown("---")
     section_title(
         f"Neighborhoods within {selected_ward}",
-        "District-level prices the ward average hides — e.g. Roppongi vs Azabu-Juban vs Shibaura "
+        "District-level prices the ward average hides · e.g. Roppongi vs Azabu-Juban vs Shibaura "
         "within Minato. Powered by the MLIT DistrictName field.",
     )
     has_district = (
@@ -532,7 +532,7 @@ with tab3:
                     top_nb.sort_values("median_ppm2"),
                     x="median_ppm2", y="district", orientation="h",
                     color="median_ppm2",
-                    color_continuous_scale=["#DBEAFE", "#3B82F6", "#1D4ED8"],
+                    color_continuous_scale=["#E2E6EC", "#2A4061", "#1B2C44"],
                     labels={"median_ppm2": "Median ¥/m²", "district": ""},
                     text=top_nb.sort_values("median_ppm2")["median_ppm2"].apply(lambda x: f"¥{x/10000:.0f}万"),
                 )
@@ -560,14 +560,14 @@ with tab3:
     else:
         callout(
             "<strong>Connect to the live MLIT API</strong> to unlock neighborhood intelligence. "
-            "The <code>DistrictName</code> field reveals sub-ward price variation — "
+            "The <code>DistrictName</code> field reveals sub-ward price variation · "
             "up to <strong>3–5× price gaps</strong> within a single ward.",
             variant="neg",
         )
 
 
 # ══════════════════════════════════════════════════════════════════════
-# TAB 5 — PRICE ESTIMATOR
+# TAB 5 · PRICE ESTIMATOR
 # ══════════════════════════════════════════════════════════════════════
 with tab5:
     section_title(
@@ -577,7 +577,7 @@ with tab5:
     _has_extended = "structure" in df_all.columns and df_all["structure"].notna().any()
 
     callout(
-        "This estimator uses <strong>k-nearest neighbors</strong> matching — it finds the most similar "
+        "This estimator uses <strong>k-nearest neighbors</strong> matching · it finds the most similar "
         "transactions to your query property based on ward, floor area, building age, and station proximity, "
         f"then returns <strong>P10 / P50 / P90 percentiles</strong> from {len(df_all):,} comparable deals. "
         + ("Extended attributes (structure, orientation, renovation) are available from the live MLIT data." if _has_extended
@@ -595,14 +595,14 @@ with tab5:
         est_year    = st.number_input("Year built", min_value=1970, max_value=datetime.now().year, value=2010, step=1)
         if is_live:
             est_minutes = 8  # MLIT API doesn't include station walk-time; not used in live matching
-            st.caption("ℹ️ Station proximity unavailable from MLIT API — not used in matching.")
+            st.caption("ℹ️ Station proximity unavailable from MLIT API · not used in matching.")
         else:
             est_minutes = st.number_input("Walk to nearest station (min)", min_value=1, max_value=30, value=8, step=1)
 
     _structure_opts  = ["Any", "RC", "SRC", "Steel", "Light Steel", "Wood"]
     _direction_opts  = ["Any", "South", "Southeast", "Southwest", "East", "West", "North", "Northeast", "Northwest"]
     with st.expander(
-        "Advanced features" + (" — improves accuracy with live data" if _has_extended else " — requires live MLIT data"),
+        "Advanced features" + (" · improves accuracy with live data" if _has_extended else " · requires live MLIT data"),
         expanded=_has_extended,
     ):
         adv1, adv2, adv3 = st.columns(3)
@@ -636,15 +636,15 @@ with tab5:
         fig_range.add_trace(go.Bar(
             x=[result["total_p90"] - result["total_p10"]], y=["Estimated range"],
             base=result["total_p10"], orientation="h",
-            marker_color="rgba(59,130,246,0.18)",
-            marker_line=dict(color="#3B82F6", width=2),
+            marker_color="#1F1B16",
+            marker_line=dict(color="#2A4061", width=2),
             showlegend=False,
             hovertemplate="P10: ¥%{base:,.0f}<br>P90: ¥%{x:,.0f}<extra></extra>",
         ))
         fig_range.add_trace(go.Scatter(
             x=[result["total_p50"]], y=["Estimated range"],
             mode="markers+text",
-            marker=dict(size=22, color="#3B82F6", symbol="diamond"),
+            marker=dict(size=22, color="#2A4061", symbol="diamond"),
             text=[format_jpy(result["total_p50"])], textposition="top center",
             showlegend=False,
             hovertemplate="Median: ¥%{x:,.0f}<extra></extra>",
@@ -654,7 +654,7 @@ with tab5:
 
 
 # ══════════════════════════════════════════════════════════════════════
-# TAB 4 — INVESTMENT SIGNALS
+# TAB 4 · INVESTMENT SIGNALS
 # ══════════════════════════════════════════════════════════════════════
 with tab4:
 
@@ -688,7 +688,7 @@ with tab4:
                 marker=dict(
                     size=np.sqrt(sig_df["n_transactions"]).clip(8, 28),
                     color=sig_df["value_score"],
-                    colorscale=[[0, "#EF4444"], [0.4, "#F59E0B"], [0.7, "#10B981"], [1, "#3B82F6"]],
+                    colorscale=[[0, "#C0492B"], [0.4, "#B08A36"], [0.7, "#2A4061"], [1, "#2A4061"]],
                     showscale=True,
                     colorbar=dict(title="Value Score", thickness=12, len=0.7),
                     line=dict(color="white", width=1),
@@ -704,7 +704,7 @@ with tab4:
 
             x_range = [sig_df["median_ppm2"].min() * 0.92, sig_df["median_ppm2"].max() * 1.05]
             y_range = [sig_df["momentum_pct"].min() - 1.5,  sig_df["momentum_pct"].max() + 2.5]
-            quadrant_color = "#94A3B8" if is_dark() else "#475569"
+            quadrant_color = "#8A857C" if is_dark() else "#5A554C"
             for label, x_frac, y_frac in [
                 ("Rising Stars", 0.08, 0.92), ("Hot Market", 0.85, 0.92),
                 ("Undervalued",  0.08, 0.08), ("Cooling",    0.85, 0.08),
@@ -737,11 +737,11 @@ with tab4:
         bearish    = sig_df.sort_values("momentum_pct").iloc[0]
         callout(
             f"<strong>Reading the dashboard:</strong> "
-            f"<strong>{top_play['ward']}</strong> leads the value rankings ({top_play['signal']}, score {top_play['value_score']:.0f}) — "
+            f"<strong>{top_play['ward']}</strong> leads the value rankings ({top_play['signal']}, score {top_play['value_score']:.0f}) · "
             f"rising momentum without yet pricing in like central wards. "
             f"<strong>{hot_market['ward']}</strong> shows the steepest momentum (+{hot_market['momentum_pct']:.1f}% YoY) "
             f"but is already expensive. <strong>{bearish['ward']}</strong> is the only ward with negative momentum "
-            f"({bearish['momentum_pct']:+.1f}%) — possible cooling or sample-driven noise. "
+            f"({bearish['momentum_pct']:+.1f}%) · possible cooling or sample-driven noise. "
             f"The dotted lines mark the citywide median ¥/m² and average momentum, defining the four quadrants."
         )
     else:

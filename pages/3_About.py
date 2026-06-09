@@ -1,4 +1,4 @@
-﻿"""About — methodology, data sources, tech stack. Plain documentation, not marketing."""
+"""About · methodology, data sources, tech stack. Plain documentation, not marketing."""
 from __future__ import annotations
 
 import os
@@ -14,9 +14,9 @@ st.caption("Documentation of data sources, methods, and assumptions used across 
 
 api_key = os.environ.get("MLIT_API_KEY", "")
 if api_key:
-    callout("<strong>Connected to MLIT API</strong> — Tokyo Deep Dive and the city comparison on The Divergence run on live transactions.", variant="pos")
+    callout("<strong>Connected to MLIT API</strong> · Tokyo Deep Dive and the city comparison on The Divergence run on live transactions.", variant="pos")
 else:
-    callout("MLIT API key not configured — Tokyo Deep Dive and the city comparison fall back to demo data.", variant="neg")
+    callout("MLIT API key not configured · Tokyo Deep Dive and the city comparison fall back to demo data.", variant="neg")
 
 st.markdown("---")
 
@@ -32,9 +32,9 @@ st.markdown("""
 
 **MLIT data lag:** XIT001 publishes data approximately 2 quarters behind the current date. The app dynamically computes the latest available period to avoid empty requests.
 
-**Curated estimates:** Prefecture-level prices and akiya rates on the Japan Overview page are not direct API outputs — they are curated estimates from MLIT aggregate reports and REINS publications. For transaction-level live MLIT data, use the city comparison on The Divergence, or Tokyo Deep Dive.
+**Curated estimates:** Prefecture-level prices and akiya rates on the Japan Overview page are not direct API outputs · they are curated estimates from MLIT aggregate reports and REINS publications. For transaction-level live MLIT data, use the city comparison on The Divergence, or Tokyo Deep Dive.
 
-**Secondary market only:** XIT001 publishes only secondary-market transactions (re-sales of existing properties). New construction sold directly by developers is not included. Verified empirically: across 78,000 Tokyo records spanning 2020-2024, the API never returned the categories "Newly Built Detached House" or "Pre-owned Detached House" — MLIT classifies all detached buildings under `Residential Land(Land and Building)` and uses the `Purpose` field (House / Office / Shop) to distinguish residential from commercial.
+**Secondary market only:** XIT001 publishes only secondary-market transactions (re-sales of existing properties). New construction sold directly by developers is not included. Verified empirically: across 78,000 Tokyo records spanning 2020-2024, the API never returned the categories "Newly Built Detached House" or "Pre-owned Detached House" · MLIT classifies all detached buildings under `Residential Land(Land and Building)` and uses the `Purpose` field (House / Office / Shop) to distinguish residential from commercial.
 
 **Property type taxonomy used here:**
 
@@ -60,7 +60,7 @@ Finds the k most similar transactions using a composite distance score across fl
 - When MLIT API data is active, structure type, facing direction, and renovation status are added to the matching.
 - Station walk-time is **not** included in MLIT API data; the input is used in synthetic mode only.
 
-**Known limitation:** distance features are not standardised (z-scored) — the current heuristic is a portfolio simplification, not a calibrated model.
+**Known limitation:** distance features are not standardised (z-scored) · the current heuristic is a portfolio simplification, not a calibrated model.
 """)
 
 st.markdown("### YoY growth")
@@ -100,7 +100,7 @@ st.markdown("""
 | Visualisation | Plotly Express, Plotly Graph Objects |
 | Data wrangling | Pandas, NumPy |
 | Geospatial | Plotly choropleth mapbox + dataofjapan/land GeoJSON |
-| API | MLIT Real Estate Information Library — XIT001 endpoint |
+| API | MLIT Real Estate Information Library · XIT001 endpoint |
 | Hosting | Streamlit Community Cloud |
 | Source control | GitHub |
 """)
@@ -109,7 +109,7 @@ st.markdown("---")
 
 st.markdown("## Author")
 st.markdown("""
-**Santiago Martinez** — data scientist & BI analyst.
+**Santiago Martinez** · data scientist & BI analyst.
 
 - [santimuru.github.io](https://santimuru.github.io)
 - [github.com/santimuru](https://github.com/santimuru)

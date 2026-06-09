@@ -14,7 +14,7 @@ import streamlit.components.v1 as components
 from pathlib import Path
 
 from utils.styles import (
-    inject_css, section_title, callout, kpi_card,
+    inject_css, page_header, section_title, callout, kpi_card,
     footer, plotly_base, nav_top, is_dark, year_ticks,
 )
 from utils.prefecture_data import get_all_as_df
@@ -76,136 +76,44 @@ pop_declining = int((df["pop_change_pct"] < 0).sum())
 akiya_avg     = df["akiya_rate_2023"].mean()
 tokyo_growth  = df.loc[df["name_en"] == "Tokyo", "price_change_pct"].iloc[0]
 
-components.html(f"""<!DOCTYPE html>
-<html>
-<head>
-<style>
-* {{ margin:0; padding:0; box-sizing:border-box; }}
-html, body {{ background:#080808; font-family:system-ui,-apple-system,sans-serif; overflow:hidden; width:100%; }}
-
-#bar {{
-  height:3px;
-  background:linear-gradient(90deg,#3B82F6,#8B5CF6,#10B981);
-  background-size:200% 100%;
-  animation:bar-shift 4s linear infinite;
-}}
-@keyframes bar-shift {{
-  0%   {{ background-position:0% 0%; }}
-  100% {{ background-position:200% 0%; }}
-}}
-
-#hero {{
-  display:flex;
-  height:297px;
-  padding:32px 48px 28px;
-  align-items:center;
-  gap:56px;
-}}
-
-#left {{ flex:1; min-width:0; }}
-
-.kicker {{
-  font-size:9px; font-weight:700; text-transform:uppercase;
-  letter-spacing:.20em; color:#3B82F6; margin-bottom:14px;
-  display:flex; align-items:center; gap:10px;
-}}
-.kicker::before {{
-  content:''; display:block; width:28px; height:1px;
-  background:linear-gradient(90deg,#3B82F6,transparent);
-  flex-shrink:0;
-}}
-.title-big {{
-  font-size:clamp(52px,7vw,80px); font-weight:900; color:#fff;
-  letter-spacing:-.04em; line-height:.86;
-  text-shadow:0 0 60px rgba(59,130,246,.18);
-  margin-bottom:18px;
-}}
-.title-sub {{
-  font-size:13px; font-weight:400;
-  color:rgba(200,225,255,.75);
-  line-height:1.80;
-  max-width:520px;
-  border-left:2px solid rgba(59,130,246,.30);
-  padding-left:14px;
-}}
-.title-sub strong {{ color:#fff; font-weight:600; }}
-
-#right {{
-  display:flex;
-  flex-direction:column;
-  gap:0;
-  min-width:190px;
-  flex-shrink:0;
-}}
-.sr-block {{
-  padding:11px 0;
-  border-bottom:1px solid rgba(255,255,255,.06);
-}}
-.sr-block:last-child {{ border-bottom:none; }}
-.sn {{
-  font-size:30px; font-weight:900; color:#3B82F6; line-height:1;
-  text-shadow:0 0 20px rgba(59,130,246,.35);
-}}
-.sl {{
-  font-size:8px; font-weight:600; text-transform:uppercase;
-  letter-spacing:.10em; color:rgba(160,200,235,.38);
-  margin-top:3px; line-height:1.4;
-}}
-</style>
-</head>
-<body>
-<div id="bar"></div>
-<div id="hero">
-  <div id="left">
-    <div class="kicker">Japan Real Estate · National Analysis · {FIRST}–{LATEST}</div>
-    <div class="title-big">THE<br>DIVERGENCE</div>
-    <div class="title-sub">
-      Tokyo's median price is <strong>{premium:.1f}x the national median</strong> — and the gap is widening.
-      <strong>{pop_declining} of 47 prefectures</strong> are losing population while a handful of metros absorb
-      everyone leaving. Meanwhile, <strong>9 million homes sit vacant</strong> and uncounted.
-      This is what a two-speed country looks like in the data.
-    </div>
-  </div>
-  <div id="right">
-    <div class="sr-block">
-      <div class="sn">¥{tokyo_price // 10000}万</div>
-      <div class="sl">Tokyo median /m²</div>
-    </div>
-    <div class="sr-block">
-      <div class="sn">¥{nat_median // 10000}万</div>
-      <div class="sl">National median /m²</div>
-    </div>
-    <div class="sr-block">
-      <div class="sn">{premium:.1f}x</div>
-      <div class="sl">Tokyo premium vs national</div>
-    </div>
-    <div class="sr-block">
-      <div class="sn">{akiya_avg:.1f}%</div>
-      <div class="sl">Avg national vacancy rate</div>
-    </div>
-  </div>
-</div>
-</body>
-</html>""", height=300, scrolling=False)
+page_header(
+    f"Japan Real Estate · National Analysis · {FIRST}–{LATEST}",
+    "The Divergence",
+    f"Tokyo's median price is {premium:.1f}× the national median, and the gap is widening. "
+    f"{pop_declining} of 47 prefectures are losing population while a handful of metros absorb everyone "
+    f"leaving. Meanwhile, around 9 million homes sit vacant. This is what a two-speed country looks like "
+    f"in the data.",
+)
+st.markdown(
+    f'''<div class="kpi-row">
+      <div class="kpi"><div class="kpi-label">Tokyo median /m²</div>
+        <div class="kpi-value kpi-value-accent">¥{tokyo_price // 10000}万</div></div>
+      <div class="kpi"><div class="kpi-label">National median /m²</div>
+        <div class="kpi-value">¥{nat_median // 10000}万</div></div>
+      <div class="kpi"><div class="kpi-label">Tokyo premium</div>
+        <div class="kpi-value">{premium:.1f}×</div></div>
+      <div class="kpi"><div class="kpi-label">Avg national vacancy</div>
+        <div class="kpi-value">{akiya_avg:.1f}%</div></div>
+    </div>''', unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# ACT 1 — WHERE IS THE MONEY?
+# ACT 1 · WHERE IS THE MONEY?
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
-<div style="height:2px;background:linear-gradient(90deg,rgba(59,130,246,.35),transparent);margin:0 0 2rem;"></div>
+
 """, unsafe_allow_html=True)
 
-section_title("Act I — Where Is the Money?", f"Real transaction medians across all 47 prefectures · {LATEST} data")
+section_title("Act I · Where Is the Money?", f"Real transaction medians across all 47 prefectures · {LATEST} data")
 
 st.markdown("""
-<p style="color:rgba(200,225,255,.78);font-size:14px;line-height:1.85;max-width:720px;margin:0 0 1.5rem;">
+<p style="color:#3A352C;font-size:14px;line-height:1.85;max-width:720px;margin:0 0 1.5rem;">
 Japan's property market is not one market. It is a handful of metropolitan cores surrounded by a vast landscape
 of deflating assets. The choropleth below makes the geography undeniable.
 </p>
 """, unsafe_allow_html=True)
 
-# Derived stats — 2025 only, YoY vs 2024
+# Derived stats · 2025 only, YoY vs 2024
 tokyo_yr  = int(df.loc[df["name_en"] == "Tokyo", PCOL].iloc[0])
 nat_med   = int(df[PCOL].median())
 cheapest  = df.loc[df[PCOL].idxmin()]
@@ -232,8 +140,8 @@ with map_col:
         fig_map = px.choropleth_mapbox(
             df, geojson=geojson, locations="name_geo",
             featureidkey="properties.nam", color=PCOL,
-            color_continuous_scale=["#1E293B", "#1D4ED8", "#3B82F6", "#60A5FA", "#BFDBFE"],
-            mapbox_style="carto-darkmatter",
+            color_continuous_scale=["#E7E0D0", "#C9D2DE", "#9FB0C6", "#5C7397", "#2A4061"],
+            mapbox_style="carto-positron",
             center={"lat": 37.0, "lon": 137.0},
             zoom=4.0,
             opacity=0.82,
@@ -314,7 +222,7 @@ with map_col:
             var pop  = cd[4] != null ? parseFloat(cd[4]) : null;
             var note = cd[5] || '';
             var yoyStr = yoy != null ? (yoy >= 0 ? '+' : '') + yoy.toFixed(1) + '% YoY' : '';
-            var yoyClr = yoy == null ? '#94A3B8' : yoy > 0 ? '#34D399' : '#F87171';
+            var yoyClr = yoy == null ? '#8A857C' : yoy > 0 ? '#5C7397' : '#D5836A';
 
             tip.innerHTML =
               '<div style="margin-bottom:5px">' +
@@ -324,15 +232,15 @@ with map_col:
               '<div style="font-size:9px;color:rgba(147,197,253,.38);text-transform:uppercase;letter-spacing:.10em;margin-bottom:10px">' + note + '</div>' +
               '<div style="font-size:9px;color:rgba(147,197,253,.45);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px">Median ¥/m²</div>' +
               '<div style="margin-bottom:10px">' +
-                '<span style="font-size:22px;font-weight:800;color:#60A5FA">¥' + prc + '</span>' +
+                '<span style="font-size:22px;font-weight:800;color:#5C7397">¥' + prc + '</span>' +
                 (yoyStr ? '&nbsp;<span style="font-size:12px;color:' + yoyClr + '">' + yoyStr + '</span>' : '') +
               '</div>' +
               '<span style="font-size:9px;color:rgba(147,197,253,.45);text-transform:uppercase;letter-spacing:.08em">Rank</span>&nbsp;' +
-              '<span style="color:#93C5FD;font-weight:700;font-size:13px">#' + rnk + '</span>&nbsp;' +
+              '<span style="color:#9FB0C6;font-weight:700;font-size:13px">#' + rnk + '</span>&nbsp;' +
               '<span style="font-size:9px;color:rgba(147,197,253,.38)">of 47</span>' +
               '&nbsp;&nbsp;<span style="color:rgba(147,197,253,.25)">·</span>&nbsp;&nbsp;' +
               '<span style="font-size:9px;color:rgba(147,197,253,.45);text-transform:uppercase;letter-spacing:.08em">Pop</span>&nbsp;' +
-              '<span style="color:#93C5FD;font-size:12px">' + (pop != null ? pop.toFixed(1) + 'M' : 'n/a') + '</span>';
+              '<span style="color:#9FB0C6;font-size:12px">' + (pop != null ? pop.toFixed(1) + 'M' : 'n/a') + '</span>';
 
             pos(ev.event); tip.style.display = 'block';
 
@@ -406,24 +314,24 @@ gap_latest = df.loc[df["name_en"] == "Tokyo", PCOL].iloc[0] / df[PCOL].min()
 callout(
     f"Tokyo trades at <strong>{gap_latest:.1f}x</strong> the cheapest prefecture in {LATEST}. "
     f"Tokyo grew <strong>{tokyo_yoy:+.1f}%</strong> YoY vs a national median of "
-    f"<strong>{nat_yoy:+.1f}%</strong>. Capital concentration is not a forecast — "
+    f"<strong>{nat_yoy:+.1f}%</strong>. Capital concentration is not a forecast · "
     f"it is the current reality in the transaction data."
 )
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# ACT 2 — THE SPLIT
+# ACT 2 · THE SPLIT
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
-<div style="height:2px;background:linear-gradient(90deg,rgba(59,130,246,.35),transparent);margin:2rem 0;"></div>
+<div style="height:2px;background:linear-gradient(90deg,#C0492B,transparent);margin:2rem 0;"></div>
 """, unsafe_allow_html=True)
 
-section_title("Act II — The Split", f"Population change 2010-2020 vs price appreciation {FIRST}-{LATEST}")
+section_title("Act II · The Split", f"Population change 2010-2020 vs price appreciation {FIRST}-{LATEST}")
 
 st.markdown("""
-<p style="color:rgba(200,225,255,.78);font-size:14px;line-height:1.85;max-width:720px;margin:0 0 1.5rem;">
+<p style="color:#3A352C;font-size:14px;line-height:1.85;max-width:720px;margin:0 0 1.5rem;">
 The simplest question in regional economics: do people follow prices, or do prices follow people?
-In Japan, the answer is both and neither. Population is shrinking almost everywhere — but prices
+In Japan, the answer is both and neither. Population is shrinking almost everywhere · but prices
 are rising almost everywhere too. What separates the fast from the slow is not demographics.
 It is proximity to the capital.
 </p>
@@ -450,13 +358,13 @@ top3_str = ", ".join(
 )
 callout(
     f"Strongest price growth {FIRST}-{LATEST}: {top3_str}. "
-    f"Bubbles are sized by {LATEST} median ¥/m² — the bigger the dot, the more expensive."
+    f"Bubbles are sized by {LATEST} median ¥/m² · the bigger the dot, the more expensive."
 )
 
 dark       = is_dark()
 ann_bg     = "rgba(8,12,20,0.92)"
-ann_border = "#2D3748"
-ann_font   = "#E2E8F0"
+ann_border = "#DED7C8"
+ann_font   = "#1F1B16"
 
 sc_chart, sc_insight = st.columns([3, 1])
 
@@ -469,7 +377,7 @@ with sc_chart:
         color="is_major_metro",
         size=PCOL,
         size_max=28,
-        color_discrete_map={True: "#3B82F6", False: "#475569"},
+        color_discrete_map={True: "#2A4061", False: "#5A554C"},
         labels={
             "pop_change_pct":   "Population change 2010-2020 (%)",
             "price_change_pct": f"Price appreciation {FIRST}-{LATEST} (%)",
@@ -481,7 +389,7 @@ with sc_chart:
     x_range = [df["pop_change_pct"].min() - 0.5, df["pop_change_pct"].max() + 0.5]
     fig_scatter.add_scatter(
         x=x_range, y=[m_coef * x + b_coef for x in x_range],
-        mode="lines", line=dict(color="#475569", dash="dot", width=1.5),
+        mode="lines", line=dict(color="#5A554C", dash="dot", width=1.5),
         showlegend=False,
     )
     label_mask = (
@@ -517,36 +425,36 @@ with sc_chart:
 with sc_insight:
     most_surprising = df[~df["is_major_metro"]].nlargest(3, "price_change_pct")[["name_en", "price_change_pct"]]
     st.markdown(f"""
-<div style="padding:1.2rem;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.18);
+<div style="padding:1.2rem;background:rgba(42,64,97,.06);border:1px solid #1F1B16;
 border-radius:10px;margin-top:2.2rem;">
   <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
-  color:rgba(100,160,255,.55);margin-bottom:1rem;">Key Finding</div>
-  <div style="font-size:26px;font-weight:900;color:#3B82F6;line-height:1;">R² = {r_sq:.2f}</div>
-  <div style="font-size:11px;color:rgba(160,200,255,.55);margin-top:.4rem;line-height:1.6;">
+  color:#6E6557;margin-bottom:1rem;">Key Finding</div>
+  <div style="font-size:26px;font-weight:900;color:#2A4061;line-height:1;">R² = {r_sq:.2f}</div>
+  <div style="font-size:11px;color:#3A352C;margin-top:.4rem;line-height:1.6;">
     Population explains only {r_sq*100:.0f}% of price variation.
     Near-zero BoJ rates lifted all 47 prefectures regardless of demographics.
   </div>
-  <div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid rgba(59,130,246,.15);">
+  <div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid #DED7C8;">
     <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.10em;
-    color:rgba(100,160,255,.45);margin-bottom:.6rem;">Non-metro surprises</div>
-    {"".join(f'<div style="font-size:12px;color:rgba(180,215,255,.70);margin-bottom:.3rem;"><strong style=color:#93C5FD>{r["name_en"]}</strong> +{r["price_change_pct"]:.0f}%</div>' for _, r in most_surprising.iterrows())}
+    color:#6E6557;margin-bottom:.6rem;">Non-metro surprises</div>
+    {"".join(f'<div style="font-size:12px;color:#3A352C;margin-bottom:.3rem;"><strong style=color:#9FB0C6>{r["name_en"]}</strong> +{r["price_change_pct"]:.0f}%</div>' for _, r in most_surprising.iterrows())}
   </div>
 </div>
 """, unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# ACT 3 — THE GHOST TOWNS
+# ACT 3 · THE GHOST TOWNS
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
 <div style="height:2px;background:linear-gradient(90deg,rgba(239,68,68,.35),transparent);margin:2rem 0;"></div>
 """, unsafe_allow_html=True)
 
-section_title("Act III — The Ghost Towns", "Japan's akiya (空き家) vacancy crisis · 2013 → 2023")
+section_title("Act III · The Ghost Towns", "Japan's akiya (空き家) vacancy crisis · 2013 → 2023")
 
 st.markdown("""
-<p style="color:rgba(200,225,255,.78);font-size:14px;line-height:1.85;max-width:720px;margin:0 0 1.5rem;">
-Akiya — literally "empty house" — is one of the most structurally unique problems in the global housing market.
+<p style="color:#3A352C;font-size:14px;line-height:1.85;max-width:720px;margin:0 0 1.5rem;">
+Akiya · literally "empty house" · is one of the most structurally unique problems in the global housing market.
 Japan has more vacant homes than it has households in many of its prefectures. The homes are not abandoned
 due to poverty or disaster. They are the accumulated inheritance of a country that built for growth and
 then stopped growing. Cultural resistance to selling family property, high demolition costs,
@@ -570,7 +478,7 @@ top3_str = ", ".join(
     for _, r in top3_akiya.iterrows()
 )
 callout(
-    f"The hardest-hit prefectures — {top3_str} — are above 20% vacancy. "
+    f"The hardest-hit prefectures · {top3_str} · are above 20% vacancy. "
     f"Urban prefectures have lower rates but growing absolute numbers as households shrink "
     f"and inheritances pile up with no buyers.",
     variant="neg",
@@ -586,7 +494,7 @@ try:
         fig_akiya = px.choropleth(
             df, geojson=geojson, locations="name_geo",
             featureidkey="properties.nam", color="akiya_rate_2023",
-            color_continuous_scale=["#334155", "#7C2D12", "#DC2626", "#FCA5A5"],
+            color_continuous_scale=["#E7E0D0", "#D29A7E", "#C0492B", "#7A2E1C"],
             labels={"akiya_rate_2023": "Vacancy %"},
             hover_name="name_en",
             custom_data=["name_ja", "akiya_rate_2023", "akiya_rate_2013", "akiya_change"],
@@ -599,7 +507,7 @@ try:
                 "  <span style='color:rgba(252,165,165,.55);font-size:12px'>%{customdata[0]}</span><br>"
                 "<span style='color:rgba(252,165,165,.5);font-size:10px;text-transform:uppercase;"
                 "letter-spacing:.08em'>Vacancy 2023</span><br>"
-                "<span style='font-size:20px;font-weight:800;color:#EF4444'>"
+                "<span style='font-size:20px;font-weight:800;color:#C0492B'>"
                 "%{customdata[1]:.1f}%</span><br>"
                 "<span style='color:rgba(252,165,165,.5);font-size:10px'>2013: %{customdata[2]:.1f}%"
                 " &nbsp;·&nbsp; change: %{customdata[3]:+.1f}pp</span>"
@@ -635,7 +543,7 @@ with col_bar:
         top15.sort_values("akiya_rate_2023"),
         x="akiya_rate_2023", y="name_en", orientation="h",
         color="akiya_rate_2023",
-        color_continuous_scale=["#7C2D12", "#DC2626", "#FCA5A5"],
+        color_continuous_scale=["#E7E0D0", "#C0492B", "#7A2E1C"],
         labels={"akiya_rate_2023": "Vacancy rate (%)", "name_en": ""},
     )
     fig_vac.update_layout(**base3)
@@ -666,13 +574,13 @@ with trend_col:
     fig_trend = px.line(
         region_trend, x="year", y="akiya_rate", color="region", markers=True,
         labels={"year": "", "akiya_rate": "Avg vacancy (%)", "region": ""},
-        color_discrete_sequence=["#3B82F6", "#F59E0B", "#EF4444", "#8B5CF6", "#10B981",
-                                  "#EC4899", "#14B8A6", "#F97316"],
+        color_discrete_sequence=["#2A4061", "#B08A36", "#C0492B", "#7A5A86", "#2A4061",
+                                  "#B05070", "#2E7D72", "#C2622A"],
     )
     fig_trend.update_layout(
         **base4,
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
-                    font=dict(color="#E2E8F0")),
+                    font=dict(color="#1F1B16")),
     )
     fig_trend.update_xaxes(showgrid=False, tickvals=[2013, 2018, 2023])
     fig_trend.update_yaxes(gridcolor=grid4, ticksuffix="%")
@@ -688,7 +596,7 @@ with trend_insight:
 border-radius:10px;margin-top:2rem;">
   <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
   color:rgba(255,100,100,.55);margin-bottom:1rem;">Projection</div>
-  <div style="font-size:24px;font-weight:900;color:#EF4444;line-height:1;">&gt;20%</div>
+  <div style="font-size:24px;font-weight:900;color:#C0492B;line-height:1;">&gt;20%</div>
   <div style="font-size:11px;color:rgba(255,180,180,.55);margin-top:.4rem;line-height:1.6;">
     National vacancy rate before 2035 if current +{avg_change:.1f}pp per-decade trend holds.
   </div>
@@ -701,19 +609,19 @@ border-radius:10px;margin-top:2rem;">
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# ACT 4 — COMPARE ANY CITY (interactive finale)
+# ACT 4 · COMPARE ANY CITY (interactive finale)
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
-<div style="height:2px;background:linear-gradient(90deg,rgba(59,130,246,.35),transparent);margin:2.5rem 0 2rem;"></div>
+<div style="height:2px;background:linear-gradient(90deg,#C0492B,transparent);margin:2.5rem 0 2rem;"></div>
 """, unsafe_allow_html=True)
 
 section_title(
-    "Act IV — Compare any city",
+    "Act IV · Compare any city",
     "You've seen the national story. Now interrogate it yourself: pick 2–5 cities and put their "
     "markets side by side, on real MLIT transaction data.",
 )
 
-_CC_COLORS = ["#3B82F6", "#F59E0B", "#EF4444", "#8B5CF6", "#10B981"]
+_CC_COLORS = ["#2A4061", "#B08A36", "#C0492B", "#7A5A86", "#2A4061"]
 _cc_api_key = os.environ.get("MLIT_API_KEY", "")
 
 
@@ -744,7 +652,7 @@ def _cc_placeholder_df(city_name: str) -> pd.DataFrame:
 
 if not _cc_api_key:
     callout(
-        "Live MLIT API key not configured — showing <strong>estimated placeholder data</strong> for illustration. "
+        "Live MLIT API key not configured · showing <strong>estimated placeholder data</strong> for illustration. "
         "Set the <code>MLIT_API_KEY</code> secret in Streamlit Cloud to enable real transaction data.",
         variant="neg",
     )
@@ -773,7 +681,7 @@ else:
                 _dfc["city_name"] = _city
                 _cc_frames[_city] = _dfc
             except Exception as exc:
-                st.warning(f"Could not load {_city}: {exc} — showing estimate instead.")
+                st.warning(f"Could not load {_city}: {exc} · showing estimate instead.")
                 _cc_frames[_city] = _cc_placeholder_df(_city)
     if _cc_to_load:
         _cc_bar.empty()
@@ -796,7 +704,7 @@ else:
             st.caption(f"{len(_dfc):,} transactions")
 
     # Price trend
-    section_title("Price trend comparison", "Median ¥/m² per quarter — year labels only for readability")
+    section_title("Price trend comparison", "Median ¥/m² per quarter · year labels only for readability")
     _trends = []
     for _city in _cc_selected:
         _t = (_cc_frames[_city].groupby("tx_period")["price_per_m2_jpy"]
@@ -827,7 +735,7 @@ else:
         _bar_df = pd.DataFrame(_bar_rows).sort_values("median_ppm2", ascending=True)
         _bb, _bg, _ = plotly_base(300)
         _fig_cb = px.bar(_bar_df, x="median_ppm2", y="city", orientation="h", color="median_ppm2",
-                         color_continuous_scale=["#BFDBFE", "#3B82F6", "#1D4ED8"],
+                         color_continuous_scale=["#C9D2DE", "#2A4061", "#1B2C44"],
                          labels={"median_ppm2": "¥/m²", "city": ""})
         _fig_cb.update_layout(**_bb)
         _fig_cb.update_coloraxes(showscale=False)
@@ -846,7 +754,7 @@ else:
         _tb, _tg, _ = plotly_base(300)
         _fig_ct2 = px.bar(_type_df, x="share", y="city", color="property_type", orientation="h", barmode="stack",
                           labels={"share": "Share", "city": "", "property_type": ""},
-                          color_discrete_sequence=["#3B82F6", "#F59E0B", "#EF4444", "#8B5CF6"])
+                          color_discrete_sequence=["#2A4061", "#B08A36", "#C0492B", "#7A5A86"])
         _fig_ct2.update_layout(**_tb, legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
         _fig_ct2.update_xaxes(gridcolor=_tg, tickformat=".0%")
         _fig_ct2.update_traces(hovertemplate="%{fullData.name}<br>%{y}<br>Share: %{x:.0%}<extra></extra>")

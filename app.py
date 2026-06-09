@@ -1,5 +1,5 @@
 """
-Japan Real Estate Intelligence — Landing / Intro page.
+Japan Real Estate Intelligence · Landing / Intro page.
 """
 from __future__ import annotations
 from pathlib import Path
@@ -66,12 +66,12 @@ def _build_hero(stats: list[tuple[str, str]], height: int = 820) -> str:
 <head>
 <style>
 * {{ margin:0; padding:0; box-sizing:border-box; }}
-html, body {{ width:100%; height:{height}px; overflow:hidden; background:#080808; font-family:system-ui,-apple-system,sans-serif; }}
+html, body {{ width:100%; height:{height}px; overflow:hidden; background:#16120E; font-family:system-ui,-apple-system,sans-serif; }}
 canvas {{ position:absolute; inset:0; width:100%; height:{height}px; display:block; }}
 
 #bar {{
   position:absolute; top:0; left:0; right:0; height:3px; z-index:10;
-  background:linear-gradient(90deg,#3B82F6,#8B5CF6,#10B981);
+  background:linear-gradient(90deg,#E8C9A0,#C0492B,#2A4061);
 }}
 
 /* ── Main hero text ── */
@@ -81,12 +81,12 @@ canvas {{ position:absolute; inset:0; width:100%; height:{height}px; display:blo
 }}
 .kicker {{
   font-size:9px; font-weight:700; text-transform:uppercase;
-  letter-spacing:.20em; color:#3B82F6; margin-bottom:16px;
+  letter-spacing:.20em; color:#E8C9A0; margin-bottom:16px;
   display:flex; align-items:center; gap:10px;
 }}
 .kicker::before {{
   content:''; display:block; width:28px; height:1px;
-  background:linear-gradient(90deg,#3B82F6,transparent);
+  background:linear-gradient(90deg,#E8C9A0,transparent);
   flex-shrink:0;
 }}
 .htitle-big {{
@@ -96,21 +96,21 @@ canvas {{ position:absolute; inset:0; width:100%; height:{height}px; display:blo
 }}
 .htitle-sub {{
   font-size:clamp(14px,1.6vw,19px); font-weight:300;
-  color:rgba(160,200,255,.55); letter-spacing:.28em;
+  color:rgba(220,180,130,.55); letter-spacing:.28em;
   margin-top:10px; margin-bottom:24px;
   text-transform:uppercase; font-style:italic;
 }}
 .hdesc {{
-  font-size:11.5px; color:rgba(170,200,230,.55); line-height:1.82;
-  border-left:2px solid rgba(59,130,246,.35); padding-left:14px;
+  font-size:11.5px; color:rgba(206,190,165,.55); line-height:1.82;
+  border-left:2px solid rgba(176,138,54,.35); padding-left:14px;
 }}
 .hdesc p {{ margin:0 0 10px; }}
 .hdesc p:last-child {{ margin-bottom:0; }}
-.hdesc strong {{ color:rgba(200,225,255,.80); font-weight:600; }}
+.hdesc strong {{ color:rgba(236,222,196,.80); font-weight:600; }}
 
 .sl {{
   font-size:8px; font-weight:600; text-transform:uppercase;
-  letter-spacing:.10em; color:rgba(160,200,235,.40);
+  letter-spacing:.10em; color:rgba(214,188,150,.40);
   margin-top:5px; line-height:1.5;
 }}
 
@@ -123,12 +123,12 @@ canvas {{ position:absolute; inset:0; width:100%; height:{height}px; display:blo
 }}
 .sr-block {{ padding:12px 0; border-bottom:1px solid rgba(255,255,255,.07); }}
 .sr-block:last-child {{ border-bottom:none; }}
-.sn {{ font-size:34px; font-weight:900; color:#3B82F6; line-height:1; }}
+.sn {{ font-size:34px; font-weight:900; color:#E8C9A0; line-height:1; }}
 
 /* ── Bottom fade ── */
 #fade {{
   position:absolute; bottom:0; left:0; right:0; height:100px; z-index:5;
-  background:linear-gradient(to bottom,transparent,rgba(14,17,23,.90));
+  background:linear-gradient(to bottom,transparent,rgba(22,18,14,.90));
   pointer-events:none;
 }}
 
@@ -139,8 +139,8 @@ canvas {{ position:absolute; inset:0; width:100%; height:{height}px; display:blo
 }}
 .tk-header {{
   font-size:7.5px; font-weight:700; text-transform:uppercase;
-  letter-spacing:.15em; color:rgba(140,180,255,.70);
-  border-bottom:1px solid rgba(90,145,255,.25);
+  letter-spacing:.15em; color:rgba(210,180,140,.70);
+  border-bottom:1px solid rgba(196,150,90,.25);
   padding-bottom:5px; margin-bottom:4px;
   display:grid; grid-template-columns:48px 76px 105px 44px 46px 50px 55px 38px;
 }}
@@ -154,23 +154,23 @@ canvas {{ position:absolute; inset:0; width:100%; height:{height}px; display:blo
   opacity:0; animation:tk-in .35s ease forwards;
 }}
 @keyframes tk-in {{
-  0%   {{ opacity:0; background:rgba(80,180,255,0.18); }}
-  25%  {{ opacity:1; background:rgba(80,180,255,0.12); }}
-  70%  {{ opacity:1; background:rgba(80,180,255,0.04); }}
+  0%   {{ opacity:0; background:rgba(210,140,80,0.18); }}
+  25%  {{ opacity:1; background:rgba(210,140,80,0.12); }}
+  70%  {{ opacity:1; background:rgba(210,140,80,0.04); }}
   100% {{ opacity:1; background:transparent; }}
 }}
 .tk-cell {{
-  font-size:9px; font-weight:400; color:rgba(180,210,240,.55);
+  font-size:9px; font-weight:400; color:rgba(210,188,155,.55);
   letter-spacing:.02em; white-space:nowrap; overflow:hidden;
 }}
 
 /* ── City tooltip ── */
 #tip {{
   position:absolute; display:none; pointer-events:none; z-index:20;
-  background:rgba(8,12,20,0.97);
-  border:1px solid rgba(70,130,255,.30);
+  background:rgba(22,18,14,0.97);
+  border:1px solid rgba(196,150,90,.30);
   border-radius:11px; min-width:210px; max-width:250px;
-  box-shadow:0 12px 40px rgba(0,0,0,.65), 0 0 0 1px rgba(100,160,255,.06);
+  box-shadow:0 12px 40px rgba(0,0,0,.65), 0 0 0 1px rgba(206,170,120,.06);
   overflow:hidden; font-family:system-ui,-apple-system,sans-serif;
 }}
 .t-header {{
@@ -183,27 +183,27 @@ canvas {{ position:absolute; inset:0; width:100%; height:{height}px; display:blo
   font-size:17px; font-weight:800; color:#fff; letter-spacing:-.02em; line-height:1;
 }}
 .t-city-ja {{
-  font-size:13px; font-weight:400; color:rgba(130,180,255,.60);
+  font-size:13px; font-weight:400; color:rgba(214,180,130,.60);
 }}
 .t-meta {{
   font-size:8.5px; font-weight:700; text-transform:uppercase;
-  letter-spacing:.13em; color:rgba(90,145,255,.50); margin-top:6px;
+  letter-spacing:.13em; color:rgba(196,150,90,.50); margin-top:6px;
   display:flex; align-items:center; gap:6px;
 }}
-.t-meta-dot {{ width:3px; height:3px; border-radius:50%; background:rgba(90,145,255,.35); flex-shrink:0; }}
+.t-meta-dot {{ width:3px; height:3px; border-radius:50%; background:rgba(196,150,90,.35); flex-shrink:0; }}
 .t-body {{
   padding:11px 14px 13px;
   display:grid; grid-template-columns:1fr 1fr; gap:10px 16px;
 }}
 .t-stat-lbl {{
   font-size:7.5px; font-weight:700; text-transform:uppercase;
-  letter-spacing:.11em; color:rgba(120,170,230,.38); margin-bottom:4px;
+  letter-spacing:.11em; color:rgba(200,172,138,.38); margin-bottom:4px;
 }}
-.t-stat-num {{ font-size:20px; font-weight:800; color:#3B82F6; line-height:1; }}
-.t-stat-unit {{ font-size:9px; color:rgba(140,190,255,.50); margin-left:2px; }}
+.t-stat-num {{ font-size:20px; font-weight:800; color:#E8C9A0; line-height:1; }}
+.t-stat-unit {{ font-size:9px; color:rgba(214,188,150,.50); margin-left:2px; }}
 .t-tier {{ display:flex; gap:3px; margin-top:5px; align-items:center; }}
 .td {{ width:5px; height:5px; border-radius:50%; }}
-.td.on  {{ background:#3B82F6; }}
+.td.on  {{ background:#E8C9A0; }}
 .td.off {{ background:rgba(255,255,255,.10); }}
 </style>
 </head>
@@ -444,7 +444,7 @@ function ll(lat, lon)  {{ return proj((lon-123)/23, (46-lat)/22); }}
 function setup() {{
   W = canvas.width  = window.innerWidth;
   H = canvas.height = {height};
-  // Fit Japan to fill the canvas — constrained by whichever axis runs out first
+  // Fit Japan to fill the canvas · constrained by whichever axis runs out first
   const scaleH = (H * 0.78) / (B.yMax - B.yMin);
   const scaleW = (W * 0.50) / (B.xMax - B.xMin);
   scale = Math.min(scaleH, scaleW);
@@ -506,7 +506,7 @@ function addTickerRow(p) {{
   const row = document.createElement('div');
   row.className = 'tk-row';
   row.innerHTML = `
-    <span class="tk-cell" style="color:rgba(120,160,220,.40);font-size:8px">${{txId}}</span>
+    <span class="tk-cell" style="color:rgba(200,175,140,.40);font-size:8px">${{txId}}</span>
     <span class="tk-cell">${{p.en}}</span>
     <span class="tk-cell">${{type}}</span>
     <span class="tk-cell">${{layout}}</span>
@@ -535,7 +535,7 @@ function triggerFlash() {{
   flashes.push({{idx, a:0, dir:1, age:0}});
   addTickerRow(particles[idx]);
 }}
-// Random interval — pauses when tab is hidden to avoid burst on return
+// Random interval · pauses when tab is hidden to avoid burst on return
 let _flashActive = false;
 function scheduleFlash() {{
   if (document.hidden) {{ _flashActive = false; return; }}
@@ -577,7 +577,7 @@ document.addEventListener('mousemove', e => {{
       const parts = best.pop.split('M');
       popEl.innerHTML = `<span class="t-stat-num">${{best.pop}}</span>`;
     }} else {{
-      popEl.innerHTML = '<span class="t-stat-num" style="color:rgba(150,200,255,.25)">n/a</span>';
+      popEl.innerHTML = '<span class="t-stat-num" style="color:rgba(214,190,150,.25)">n/a</span>';
     }}
 
     // Price + tier dots
@@ -590,7 +590,7 @@ document.addEventListener('mousemove', e => {{
       priceEl.innerHTML = `<span class="t-stat-num">${{clean}}</span><span class="t-stat-unit">/m²</span>`;
       dotsEl.innerHTML  = [1,2,3,4,5].map(i=>`<div class="td ${{i<=tier?'on':'off'}}"></div>`).join('');
     }} else {{
-      priceEl.innerHTML = '<span class="t-stat-num" style="color:rgba(150,200,255,.25)">n/a</span>';
+      priceEl.innerHTML = '<span class="t-stat-num" style="color:rgba(214,190,150,.25)">n/a</span>';
       dotsEl.innerHTML  = '';
     }}
 
@@ -618,7 +618,7 @@ function animate(){{
     if(d<LINK_D){{
       ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);
       ctx.lineTo(particles[j].x,particles[j].y);
-      ctx.strokeStyle=`rgba(140,195,255,${{(1-d/LINK_D)*.42}})`;
+      ctx.strokeStyle=`rgba(230,180,120,${{(1-d/LINK_D)*.42}})`;
       ctx.lineWidth=.55;ctx.stroke();
     }}
   }}
@@ -628,23 +628,23 @@ function animate(){{
     const hot = (p === nearest);
     if(hot){{
       ctx.beginPath();ctx.arc(p.x,p.y,p.r+8,0,Math.PI*2);
-      ctx.strokeStyle='rgba(100,200,255,0.90)';
+      ctx.strokeStyle='rgba(224,150,90,0.90)';
       ctx.lineWidth=1.5;
-      ctx.shadowColor='rgba(80,180,255,0.55)';
+      ctx.shadowColor='rgba(210,140,80,0.55)';
       ctx.shadowBlur=14;
       ctx.stroke();
       ctx.beginPath();ctx.arc(p.x,p.y,p.r+3,0,Math.PI*2);
-      ctx.fillStyle='rgba(100,200,255,0.12)';
+      ctx.fillStyle='rgba(224,150,90,0.12)';
       ctx.fill();
       ctx.shadowBlur=0;
     }}
     ctx.beginPath();ctx.arc(p.x,p.y,hot?p.r*1.6:p.r,0,Math.PI*2);
     if(hot){{
-      ctx.shadowColor='rgba(160,220,255,0.95)';ctx.shadowBlur=22;
+      ctx.shadowColor='rgba(236,205,165,0.95)';ctx.shadowBlur=22;
       ctx.fillStyle='rgba(255,255,255,0.95)';
     }}else{{
       ctx.shadowColor='transparent';ctx.shadowBlur=0;
-      ctx.fillStyle='rgba(175,215,255,.72)';
+      ctx.fillStyle='rgba(232,201,160,.72)';
     }}
     ctx.fill();
   }});
@@ -661,15 +661,15 @@ function animate(){{
     // Ring always expands outward using age
     const ring = p.r + f.age * 0.28;
     ctx.beginPath();ctx.arc(p.x,p.y,ring,0,Math.PI*2);
-    ctx.strokeStyle=`rgba(120,230,255,${{f.a*0.70}})`;
+    ctx.strokeStyle=`rgba(232,170,110,${{f.a*0.70}})`;
     ctx.lineWidth=1.5;
-    ctx.shadowColor=`rgba(80,200,255,${{f.a*0.45}})`;
+    ctx.shadowColor=`rgba(214,150,90,${{f.a*0.45}})`;
     ctx.shadowBlur=14;
     ctx.stroke();
     // Bright dot flash
     ctx.beginPath();ctx.arc(p.x,p.y,p.r*(1+f.a*0.40),0,Math.PI*2);
-    ctx.fillStyle=`rgba(220,245,255,${{f.a*0.75}})`;
-    ctx.shadowColor=`rgba(160,230,255,${{f.a*0.85}})`;
+    ctx.fillStyle=`rgba(248,235,210,${{f.a*0.75}})`;
+    ctx.shadowColor=`rgba(236,205,165,${{f.a*0.85}})`;
     ctx.shadowBlur=14+f.a*8;
     ctx.fill();
     ctx.shadowBlur=0;

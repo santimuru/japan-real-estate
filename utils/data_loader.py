@@ -1,5 +1,5 @@
 """
-Data loader — three-tier entry point (load_data):
+Data loader · three-tier entry point (load_data):
 
 1. Parquet cache (primary): reads ward_transactions.parquet if present.
 2. mlit_api: calls MLIT XIT001 API when DATA_SOURCE=mlit_api and MLIT_API_KEY is set.
@@ -166,7 +166,7 @@ def generate_synthetic_data(n: int = N_TRANSACTIONS, seed: int = RANDOM_SEED) ->
         winfo = TOKYO_WARDS[ward]
         ptype = rng.choice(ptypes, p=ptype_probs)
 
-        # Transaction year (slight recent skew — more data in recent years)
+        # Transaction year (slight recent skew · more data in recent years)
         year_weights = np.array([0.17, 0.18, 0.20, 0.22, 0.23])
         tx_year = int(rng.choice(years, p=year_weights))
         tx_quarter = int(rng.integers(1, 5))
@@ -180,7 +180,7 @@ def generate_synthetic_data(n: int = N_TRANSACTIONS, seed: int = RANDOM_SEED) ->
         area_m2 = _sample_area(ptype, rng)
         layout = _sample_layout(ptype, area_m2, rng)
 
-        # Station distance (minutes walk) — weighted, most properties 5-15 min
+        # Station distance (minutes walk) · weighted, most properties 5-15 min
         station_min = int(np.clip(rng.gamma(shape=2.8, scale=3.5), 1, 30))
         station = rng.choice(WARD_MAIN_STATIONS[ward])
 
@@ -223,7 +223,7 @@ def generate_synthetic_data(n: int = N_TRANSACTIONS, seed: int = RANDOM_SEED) ->
             "price_per_m2_jpy": int(price_per_m2),
             "lat": winfo["lat"],
             "lon": winfo["lon"],
-            # Extended fields (None in synthetic — populated from MLIT API)
+            # Extended fields (None in synthetic · populated from MLIT API)
             "district":         None,
             "district_code":    None,
             "structure":        None,
@@ -261,7 +261,7 @@ _MUNICIPALITY_TO_WARD: dict[str, str] = {
 
 # MLIT "Type" field (English, language=en) → broad bucket.
 # Verified across 78k records (2020-2024, all Tokyo): "Pre-owned Detached House"
-# and "Newly Built Detached House" never appear — MLIT classifies all houses
+# and "Newly Built Detached House" never appear · MLIT classifies all houses
 # under "Residential Land(Land and Building)" with Purpose distinguishing
 # House / Office / Shop / Other. We split that bucket below using Purpose.
 _BROAD_TYPE_MAP: dict[str, str] = {
@@ -277,7 +277,7 @@ _BROAD_TYPE_MAP: dict[str, str] = {
 
 def _classify_property_type(rec: dict) -> str | None:
     """Map an MLIT record to one of: Used Apartment, Used House,
-    Used Commercial, Land Only — using Type + Purpose fields together.
+    Used Commercial, Land Only · using Type + Purpose fields together.
     Returns None for Forest Land, Agricultural Land, or unmapped types.
     """
     broad = _BROAD_TYPE_MAP.get(rec.get("Type", ""))
@@ -289,7 +289,7 @@ def _classify_property_type(rec: dict) -> str | None:
             return "Used House"
         if any(k in purpose for k in ("office", "shop", "store")):
             return "Used Commercial"
-        # Empty purpose or "Other" — treat as residential by default (most common)
+        # Empty purpose or "Other" · treat as residential by default (most common)
         return "Used House"
     return None
 
@@ -411,7 +411,7 @@ def load_from_mlit_api(api_key: str) -> pd.DataFrame:
             try:
                 records = _fetch_quarter(api_key, year, quarter)
             except Exception as exc:
-                print(f"[MLIT] Warning: {year}-Q{quarter} failed — {exc}")
+                print(f"[MLIT] Warning: {year}-Q{quarter} failed · {exc}")
                 records = []
 
             for rec in records:
@@ -494,7 +494,7 @@ def load_city_data(pref_code: str, api_key: str, start_year: int = 2022) -> pd.D
             try:
                 records = _fetch_quarter(api_key, year, quarter, pref_code=pref_code)
             except Exception as exc:
-                print(f"[MLIT] Warning: {pref_code} {year}-Q{quarter} failed — {exc}")
+                print(f"[MLIT] Warning: {pref_code} {year}-Q{quarter} failed · {exc}")
                 records = []
 
             for rec in records:

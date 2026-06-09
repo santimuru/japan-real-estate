@@ -16,3 +16,7 @@ fix_quotes.ps1
 qa_check.py
 qa_runtime.py
 venv/
+
+# QA artifacts
+_qa/
+_qa_run.log

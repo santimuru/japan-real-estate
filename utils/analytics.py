@@ -1,5 +1,5 @@
 """
-Analytics helpers — stats, aggregations, and the price estimator model.
+Analytics helpers · stats, aggregations, and the price estimator model.
 """
 from __future__ import annotations
 
@@ -316,7 +316,7 @@ def estimate_price(
 
 def format_jpy(value: float, short: bool = True) -> str:
     if pd.isna(value):
-        return "—"
+        return "·"
     if short:
         if value >= 100_000_000:
             return f"¥{value/100_000_000:.2f}億"
@@ -329,5 +329,5 @@ def format_jpy(value: float, short: bool = True) -> str:
 
 def format_ppm2(value: float) -> str:
     if pd.isna(value):
-        return "—"
+        return "·"
     return f"¥{value/10000:.0f}万/m²"

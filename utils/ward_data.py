@@ -1,5 +1,5 @@
 """
-Tokyo 23 Special Wards — reference data.
+Tokyo 23 Special Wards · reference data.
 
 Contains:
 - Ward metadata (name in English + Japanese, centroid lat/lon, population)
