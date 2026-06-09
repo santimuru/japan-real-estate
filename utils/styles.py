@@ -12,7 +12,7 @@ import streamlit as st
 WASHI   = "#FFFFFF"   # white ground
 PANEL   = "#F6F6F4"   # faint panel
 SUMI    = "#111111"   # ink
-INK60   = "#8A8A88"   # muted grey
+INK60   = "#6B6B68"   # muted grey (readable on white)
 LINE    = "#E7E7E4"   # hairline
 AI      = "#111111"   # ink · primary data / growth / Tokyo
 AI_LT   = "#777777"   # grey

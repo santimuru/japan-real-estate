@@ -76,25 +76,24 @@ pop_declining = int((df["pop_change_pct"] < 0).sum())
 akiya_avg     = df["akiya_rate_2023"].mean()
 tokyo_growth  = df.loc[df["name_en"] == "Tokyo", "price_change_pct"].iloc[0]
 
-page_header(
-    f"Japan Real Estate · National Analysis · {FIRST}–{LATEST}",
-    "The Divergence",
-    f"Tokyo's median price is {premium:.1f}× the national median, and the gap is widening. "
-    f"{pop_declining} of 47 prefectures are losing population while a handful of metros absorb everyone "
-    f"leaving. Meanwhile, around 9 million homes sit vacant. This is what a two-speed country looks like "
-    f"in the data.",
-)
-st.markdown(
-    f'''<div class="kpi-row">
-      <div class="kpi"><div class="kpi-label">Tokyo median /m²</div>
-        <div class="kpi-value kpi-value-accent">¥{tokyo_price // 10000}万</div></div>
-      <div class="kpi"><div class="kpi-label">National median /m²</div>
-        <div class="kpi-value">¥{nat_median // 10000}万</div></div>
-      <div class="kpi"><div class="kpi-label">Tokyo premium</div>
-        <div class="kpi-value">{premium:.1f}×</div></div>
-      <div class="kpi"><div class="kpi-label">Avg national vacancy</div>
-        <div class="kpi-value">{akiya_avg:.1f}%</div></div>
-    </div>''', unsafe_allow_html=True)
+st.markdown(f'''
+<div style="display:flex; justify-content:space-between; align-items:flex-end; gap:3.5rem;
+     padding:2.6rem 0 1.7rem; border-bottom:1px solid #E7E7E4; margin-bottom:2.4rem;">
+  <div style="max-width:600px;">
+    <div class="page-header-eyebrow" style="margin-bottom:1.1rem;">Japan Real Estate · National Analysis · {FIRST}–{LATEST}</div>
+    <div class="page-header-title" style="margin-bottom:1rem;">The Divergence</div>
+    <div class="page-header-desc">Tokyo's median price is {premium:.1f}× the national median, and the
+    gap is widening. {pop_declining} of 47 prefectures are losing population while a handful of metros
+    absorb everyone leaving. Around 9 million homes sit vacant. This is what a two-speed country looks
+    like in the data.</div>
+  </div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem 2.4rem; flex-shrink:0; padding-bottom:0.3rem;">
+    <div><div class="kpi-label">Tokyo median /m²</div><div class="kpi-value kpi-value-accent">¥{tokyo_price // 10000}万</div></div>
+    <div><div class="kpi-label">National median /m²</div><div class="kpi-value">¥{nat_median // 10000}万</div></div>
+    <div><div class="kpi-label">Tokyo premium</div><div class="kpi-value">{premium:.1f}×</div></div>
+    <div><div class="kpi-label">Avg national vacancy</div><div class="kpi-value">{akiya_avg:.1f}%</div></div>
+  </div>
+</div>''', unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -276,32 +275,9 @@ with rank_col:
     rank_pos = int(df.loc[df["name_en"] == "Tokyo", "rank_latest"].iloc[0])
     tokyo_yoy = float(df.loc[df["name_en"] == "Tokyo", "yoy_pct"].iloc[0])
     nat_yoy   = float(df["yoy_pct"].median())
-    st.markdown(f"""
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem;">
-  <div class="kpi">
-    <div class="kpi-label">Tokyo median /m²</div>
-    <div class="kpi-value kpi-value-accent">¥{tokyo_yr // 10000}万</div>
-    <div class="kpi-sub">#{rank_pos} nationally · {tokyo_yoy:+.1f}% YoY</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-label">National median</div>
-    <div class="kpi-value">¥{nat_med // 10000}万</div>
-    <div class="kpi-sub">{LATEST} · {nat_yoy:+.1f}% YoY</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-label">Tokyo premium</div>
-    <div class="kpi-value kpi-value-accent">{prem_yr:.1f}x</div>
-    <div class="kpi-sub">vs national median</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-label">Most affordable</div>
-    <div class="kpi-value">{cheapest["name_en"]}</div>
-    <div class="kpi-sub">¥{int(cheapest[PCOL]) // 10000}万/m²</div>
-  </div>
-</div>
-""", unsafe_allow_html=True)
-
-    section_title("All 47 prefectures ranked", f"Median ¥/m² · {LATEST}")
+    section_title("All 47 prefectures ranked",
+                  f"Median ¥/m² · {LATEST} · cheapest is {cheapest['name_en']} at "
+                  f"¥{int(cheapest[PCOL]) // 10000}万/m²")
     ranked = df[["name_en", "name_ja", PCOL, "yoy_pct", "rank_latest"]].copy()
     ranked = ranked.rename(columns={"name_en": "Prefecture", "name_ja": "日本語"})
     ranked["¥/m²"]   = ranked[PCOL].apply(lambda x: f"¥{int(x) // 10000}万" if pd.notna(x) else "n/a")
