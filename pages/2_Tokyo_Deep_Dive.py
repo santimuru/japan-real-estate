@@ -158,11 +158,11 @@ with tab1:
             locations="ward",
             featureidkey="properties.ward_en",
             color="median_ppm2",
-            color_continuous_scale=["#EEEEEC", "#111111", "#000000"],
-            mapbox_style="carto-positron" if get_theme() == "dark" else "carto-positron",
+            color_continuous_scale=["#E6E6E3", "#9A9A98", "#3A3A38", "#111111"],
+            mapbox_style="white-bg",
             center={"lat": 35.685, "lon": 139.75},
             zoom=9.6,
-            opacity=0.78,
+            opacity=0.9,
             hover_name="ward",
             hover_data={
                 "ward":           False,
@@ -179,9 +179,11 @@ with tab1:
                 "ward_ja":        "Japanese name",
             },
         )
+        fig_map.update_traces(marker_line_color="rgba(0,0,0,0.22)", marker_line_width=0.6)
         fig_map.update_layout(
             **base_map,
-            coloraxis_colorbar=dict(title="¥/m²", tickformat=",.0f"),
+            coloraxis_colorbar=dict(title=dict(text="¥/m²", font=dict(color="#6B6B68", size=11)),
+                                    tickformat=",.0f", tickfont=dict(color="#6B6B68", size=10)),
         )
         st.plotly_chart(fig_map, use_container_width=True,
                         config={"scrollZoom": False, "doubleClick": False, "displayModeBar": False})

@@ -139,8 +139,8 @@ with map_col:
         fig_map = px.choropleth_mapbox(
             df, geojson=geojson, locations="name_geo",
             featureidkey="properties.nam", color=PCOL,
-            color_continuous_scale=["#F2F2F0", "#D8D8D6", "#9A9A98", "#555553", "#111111"],
-            mapbox_style="carto-positron",
+            color_continuous_scale=["#E6E6E3", "#B5B5B1", "#6E6E6A", "#333331", "#111111"],
+            mapbox_style="white-bg",
             center={"lat": 37.0, "lon": 137.0},
             zoom=4.0,
             opacity=0.82,
@@ -148,7 +148,7 @@ with map_col:
             custom_data=["name_ja", "rank_latest", PCOL, "yoy_pct", "pop_2020", "tooltip_note"],
         )
         fig_map.update_traces(
-            marker_line_color="rgba(96,165,250,0.40)",
+            marker_line_color="rgba(0,0,0,0.16)",
             marker_line_width=0.6,
             hovertemplate="<extra></extra>",
         )
@@ -163,7 +163,7 @@ with map_col:
             zmin=0, zmax=1,
             showscale=False,
             marker_opacity=0.0,
-            marker_line_color="rgba(255,255,255,0.95)",
+            marker_line_color="rgba(216,65,47,0.95)",
             marker_line_width=2.5,
             hoverinfo="skip",
             name="_hl",
@@ -171,10 +171,10 @@ with map_col:
         fig_map.update_layout(
             **base,
             coloraxis_colorbar=dict(
-                title=dict(text="¥/m²", font=dict(color="rgba(180,210,255,.75)", size=11)),
+                title=dict(text="¥/m²", font=dict(color="#6B6B68", size=11)),
                 tickformat=",.0f", thickness=10, len=0.55, y=0.5, x=1.0,
-                tickfont=dict(color="rgba(180,210,255,.65)", size=10),
-                tickcolor="rgba(180,210,255,.30)",
+                tickfont=dict(color="#6B6B68", size=10),
+                tickcolor="rgba(0,0,0,0.20)",
             ),
         )
         _map_cfg = {"scrollZoom": False, "doubleClick": "reset", "displayModeBar": False}
@@ -338,7 +338,7 @@ callout(
 )
 
 dark       = is_dark()
-ann_bg     = "rgba(8,12,20,0.92)"
+ann_bg     = "rgba(255,255,255,0.92)"
 ann_border = "#E7E7E4"
 ann_font   = "#111111"
 
@@ -401,8 +401,7 @@ with sc_chart:
 with sc_insight:
     most_surprising = df[~df["is_major_metro"]].nlargest(3, "price_change_pct")[["name_en", "price_change_pct"]]
     st.markdown(f"""
-<div style="padding:1.2rem;background:rgba(42,64,97,.06);border:1px solid #111111;
-border-radius:10px;margin-top:2.2rem;">
+<div style="padding:0 0 0 1.2rem;border-left:2px solid #D8412F;margin-top:2.6rem;">
   <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
   color:#8A8A88;margin-bottom:1rem;">Key Finding</div>
   <div style="font-size:26px;font-weight:900;color:#111111;line-height:1;">R² = {r_sq:.2f}</div>
@@ -413,7 +412,7 @@ border-radius:10px;margin-top:2.2rem;">
   <div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid #E7E7E4;">
     <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.10em;
     color:#8A8A88;margin-bottom:.6rem;">Non-metro surprises</div>
-    {"".join(f'<div style="font-size:12px;color:#3A352C;margin-bottom:.3rem;"><strong style=color:#BFBFBF>{r["name_en"]}</strong> +{r["price_change_pct"]:.0f}%</div>' for _, r in most_surprising.iterrows())}
+    {"".join(f'<div style="font-size:12px;color:#3A352C;margin-bottom:.3rem;"><strong style=color:#111111>{r["name_en"]}</strong> +{r["price_change_pct"]:.0f}%</div>' for _, r in most_surprising.iterrows())}
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -499,11 +498,12 @@ try:
         )
         fig_akiya.update_layout(
             **base,
+            hoverlabel=dict(bgcolor="#1A1A1A", bordercolor="#1A1A1A"),
             coloraxis_colorbar=dict(
-                title=dict(text="Vacancy %", font=dict(color="rgba(252,165,165,.75)", size=11)),
+                title=dict(text="Vacancy %", font=dict(color="#6B6B68", size=11)),
                 ticksuffix="%", thickness=10, len=0.55, y=0.5, x=1.0,
-                tickfont=dict(color="rgba(252,165,165,.65)", size=10),
-                tickcolor="rgba(252,165,165,.30)",
+                tickfont=dict(color="#6B6B68", size=10),
+                tickcolor="rgba(0,0,0,0.20)",
             ),
         )
         st.plotly_chart(fig_akiya, use_container_width=True,
@@ -550,8 +550,8 @@ with trend_col:
     fig_trend = px.line(
         region_trend, x="year", y="akiya_rate", color="region", markers=True,
         labels={"year": "", "akiya_rate": "Avg vacancy (%)", "region": ""},
-        color_discrete_sequence=["#111111", "#999999", "#D8412F", "#7A5A86", "#111111",
-                                  "#B05070", "#2E7D72", "#C2622A"],
+        color_discrete_sequence=["#111111", "#D8412F", "#3A3A38", "#6B6B68", "#9A9A98",
+                                  "#555553", "#B5B5B1", "#808080", "#C7857A"],
     )
     fig_trend.update_layout(
         **base4,
@@ -568,16 +568,15 @@ with trend_col:
 
 with trend_insight:
     st.markdown(f"""
-<div style="padding:1.2rem;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.20);
-border-radius:10px;margin-top:2rem;">
+<div style="padding:0 0 0 1.2rem;border-left:2px solid #D8412F;margin-top:2.6rem;">
   <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
-  color:rgba(255,100,100,.55);margin-bottom:1rem;">Projection</div>
-  <div style="font-size:24px;font-weight:900;color:#D8412F;line-height:1;">&gt;20%</div>
-  <div style="font-size:11px;color:rgba(255,180,180,.55);margin-top:.4rem;line-height:1.6;">
-    National vacancy rate before 2035 if current +{avg_change:.1f}pp per-decade trend holds.
+  color:#6B6B68;margin-bottom:0.8rem;">Projection</div>
+  <div style="font-size:30px;font-weight:300;color:#D8412F;line-height:1;letter-spacing:-0.02em;">&gt;20%</div>
+  <div style="font-size:12px;color:#3A3A38;margin-top:.6rem;line-height:1.65;">
+    National vacancy rate before 2035 if the current +{avg_change:.1f}pp per-decade trend holds.
   </div>
-  <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(239,68,68,.15);
-  font-size:11px;color:rgba(255,160,160,.50);line-height:1.7;">
+  <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid #E7E7E4;
+  font-size:12px;color:#3A3A38;line-height:1.7;">
     Every region accelerated after 2018. Some municipalities now pay buyers ¥1M+ to take akiya.
   </div>
 </div>
@@ -597,7 +596,7 @@ section_title(
     "markets side by side, on real MLIT transaction data.",
 )
 
-_CC_COLORS = ["#111111", "#999999", "#D8412F", "#7A5A86", "#111111"]
+_CC_COLORS = ["#111111", "#D8412F", "#6B6B68", "#3A3A38", "#9A9A98"]
 _cc_api_key = os.environ.get("MLIT_API_KEY", "")
 
 
