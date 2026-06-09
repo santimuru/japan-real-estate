@@ -12,11 +12,17 @@ nav_top("about")
 st.markdown("# About & Methodology")
 st.caption("Documentation of data sources, methods, and assumptions used across the app.")
 
+from utils.data_loader import _WARD_PARQUET
 api_key = os.environ.get("MLIT_API_KEY", "")
+ward_cached = _WARD_PARQUET.exists()
 if api_key:
-    callout("<strong>Connected to MLIT API</strong> · Tokyo Deep Dive and the city comparison on The Divergence run on live transactions.", variant="pos")
+    callout("<strong>Connected to MLIT API</strong> · Tokyo Deep Dive and the city comparison run on live MLIT transactions.", variant="pos")
+elif ward_cached:
+    callout("<strong>Tokyo Deep Dive runs on real MLIT transaction data</strong> (cached from the official XIT001 API). "
+            "Prefecture prices and akiya rates are curated MLIT/REINS estimates. Only the live city comparison falls back to "
+            "demo data until an MLIT API key is configured.", variant="pos")
 else:
-    callout("MLIT API key not configured · Tokyo Deep Dive and the city comparison fall back to demo data.", variant="neg")
+    callout("MLIT API key not configured · the city comparison falls back to demo data.", variant="neg")
 
 st.markdown("---")
 
