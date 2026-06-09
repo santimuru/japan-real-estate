@@ -729,7 +729,7 @@ else:
         _tb, _tg, _ = plotly_base(300)
         _fig_ct2 = px.bar(_type_df, x="share", y="city", color="property_type", orientation="h", barmode="stack",
                           labels={"share": "Share", "city": "", "property_type": ""},
-                          color_discrete_sequence=["#111111", "#999999", "#D8412F", "#7A5A86"])
+                          color_discrete_sequence=["#111111", "#888886", "#D8412F", "#BFBFBD"])
         _fig_ct2.update_layout(**_tb, legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
         _fig_ct2.update_xaxes(gridcolor=_tg, tickformat=".0%")
         _fig_ct2.update_traces(hovertemplate="%{fullData.name}<br>%{y}<br>Share: %{x:.0%}<extra></extra>")
