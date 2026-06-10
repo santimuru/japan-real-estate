@@ -205,6 +205,31 @@ canvas {{ position:absolute; inset:0; width:100%; height:{height}px; display:blo
 .td {{ width:5px; height:5px; border-radius:50%; }}
 .td.on  {{ background:#111111; }}
 .td.off {{ background:rgba(255,255,255,.10); }}
+
+/* ── Mobile: stack the absolute composition into normal flow ── */
+@media (max-width: 640px) {{
+  html, body {{ height:auto !important; overflow:visible !important; }}
+  #bar {{ position:relative !important; }}
+  canvas {{ position:relative !important; inset:auto !important; height:280px !important; }}
+  #fade, #ticker {{ display:none !important; }}
+  #hero {{
+    position:relative !important; left:auto !important; top:auto !important;
+    width:auto !important; padding:16px 20px 2px !important;
+  }}
+  .htitle-big {{ font-size:46px !important; }}
+  .htitle-sub {{ margin-bottom:14px !important; }}
+  .hdesc {{ display:none !important; }}
+  #stats-right {{
+    position:relative !important; right:auto !important; top:auto !important;
+    min-width:0 !important; flex-direction:row !important; flex-wrap:wrap !important;
+    gap:0 !important; padding:4px 20px 20px !important;
+  }}
+  .sr-block {{
+    flex:1 1 44% !important; padding:11px 0 !important;
+    border-bottom:1px solid rgba(150,150,148,.18) !important;
+  }}
+  .sn {{ font-size:30px !important; }}
+}}
 </style>
 </head>
 <body>
@@ -442,8 +467,8 @@ function proj(nx, ny) {{ return [nx*scale+offX, ny*scale+offY]; }}
 function ll(lat, lon)  {{ return proj((lon-123)/23, (46-lat)/22); }}
 
 function setup() {{
-  W = canvas.width  = window.innerWidth;
-  H = canvas.height = {height};
+  W = canvas.width  = canvas.clientWidth  || window.innerWidth;
+  H = canvas.height = canvas.clientHeight || {height};
   // Fit Japan to fill the canvas · constrained by whichever axis runs out first
   const scaleH = (H * 0.78) / (B.yMax - B.yMin);
   const scaleW = (W * 0.50) / (B.xMax - B.xMin);
