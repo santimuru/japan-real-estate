@@ -77,9 +77,9 @@ akiya_avg     = df["akiya_rate_2023"].mean()
 tokyo_growth  = df.loc[df["name_en"] == "Tokyo", "price_change_pct"].iloc[0]
 
 st.markdown(f'''
-<div style="display:flex; justify-content:space-between; align-items:flex-end; gap:3.5rem;
+<div class="hero-split" style="display:flex; justify-content:space-between; align-items:flex-end; gap:3.5rem;
      padding:2.6rem 0 1.7rem; border-bottom:1px solid #E7E7E4; margin-bottom:2.4rem;">
-  <div style="max-width:600px;">
+  <div class="hero-text" style="max-width:600px;">
     <div class="page-header-eyebrow" style="margin-bottom:1.1rem;">Japan Real Estate · National Analysis · {FIRST}–{LATEST}</div>
     <div class="page-header-title" style="margin-bottom:1rem;">The Divergence</div>
     <div class="page-header-desc">Tokyo's median price is {premium:.1f}× the national median, and the
@@ -87,7 +87,7 @@ st.markdown(f'''
     absorb everyone leaving. Around 9 million homes sit vacant. This is what a two-speed country looks
     like in the data.</div>
   </div>
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem 2.4rem; flex-shrink:0; padding-bottom:0.3rem;">
+  <div class="hero-kpis" style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem 2.4rem; flex-shrink:0; padding-bottom:0.3rem;">
     <div><div class="kpi-label">Tokyo median /m²</div><div class="kpi-value kpi-value-accent">¥{tokyo_price // 10000}万</div></div>
     <div><div class="kpi-label">National median /m²</div><div class="kpi-value">¥{nat_median // 10000}万</div></div>
     <div><div class="kpi-label">Tokyo premium</div><div class="kpi-value">{premium:.1f}×</div></div>

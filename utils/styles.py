@@ -130,7 +130,7 @@ section[data-testid="stSidebar"], button[kind="header"] {{ display:none !importa
 .kpi {{ padding:0; }}
 .kpi-label {{ font-size:0.66rem; font-weight:600; text-transform:uppercase; letter-spacing:0.14em;
     color:{INK60}; margin-bottom:0.7rem; order:2; }}
-.kpi-value {{ font-weight:300; font-size:2.7rem; color:{SUMI}; line-height:1; letter-spacing:-0.02em;
+.kpi-value {{ font-weight:300; font-size:clamp(1.6rem,6.5vw,2.7rem); color:{SUMI}; line-height:1; letter-spacing:-0.02em;
     font-variant-numeric:tabular-nums; }}
 .kpi-value-accent {{ color:{SHU}; }}
 .kpi-sub {{ font-size:0.74rem; color:{INK60}; margin-top:0.5rem; font-weight:400; }}
@@ -179,6 +179,23 @@ input, textarea {{ background:{WASHI} !important; border-color:{LINE} !important
     font-size:0.74rem; color:#B4B4B0; text-align:center; line-height:1.8; }}
 .app-footer a {{ color:{SUMI}; text-decoration:none; border-bottom:1px solid {SHU}; }}
 .app-footer a:hover {{ color:{SHU}; }}
+
+/* ===== Mobile responsive ===== */
+@media (max-width: 640px){{
+  [data-testid="stHorizontalBlock"]{{ flex-direction:column !important; gap:.75rem !important; }}
+  [data-testid="stHorizontalBlock"] > [data-testid="column"],
+  [data-testid="stColumn"]{{ width:100% !important; flex:1 1 100% !important; min-width:0 !important; }}
+  .kpi-row{{ flex-direction:column !important; gap:1rem !important; }}
+  .block-container, .main .block-container{{ padding-left:1rem !important; padding-right:1rem !important; }}
+  /* tab strip scrollable en vez de romper */
+  .stTabs [data-baseweb="tab-list"]{{ overflow-x:auto !important; flex-wrap:nowrap !important; gap:1.2rem !important; }}
+  .stTabs [data-baseweb="tab"]{{ flex:0 0 auto !important; white-space:nowrap !important; }}
+  .page-header{{ padding:1.8rem 0 1.2rem !important; margin-bottom:1.6rem !important; }}
+  /* hero split (raw-HTML, not a Streamlit column) stacks vertically */
+  .hero-split{{ flex-direction:column !important; align-items:stretch !important; gap:1.6rem !important; }}
+  .hero-split .hero-text{{ max-width:100% !important; }}
+  .hero-split .hero-kpis{{ grid-template-columns:1fr 1fr !important; gap:1.2rem 1.4rem !important; }}
+}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -243,6 +260,12 @@ def nav_top(current: str = "") -> None:
 .app-nav .nav-lnk.nav-active {{ color:{SUMI}; border-bottom-color:{SHU}; }}
 div[data-testid="stVerticalBlock"] {{ gap:0 !important; }}
 div[data-testid="stMarkdownContainer"]:has(.app-nav) {{ margin-bottom:0 !important; }}
+@media (max-width: 640px) {{
+  .app-nav {{ overflow-x:auto !important; flex-wrap:nowrap !important; gap:1.1rem !important;
+      padding:0.9rem 0 !important; -webkit-overflow-scrolling:touch; }}
+  .app-nav .nav-logo {{ font-size:13px !important; white-space:nowrap !important; margin-right:1.4rem !important; }}
+  .app-nav .nav-lnk {{ flex:0 0 auto; }}
+}}
 </style>
 <div class="app-nav">
   <a class="nav-logo" href="/" target="_self">Japan Real Estate<span class="seal"> · 不動産</span></a>
